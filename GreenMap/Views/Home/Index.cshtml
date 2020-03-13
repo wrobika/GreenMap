@@ -2,10 +2,52 @@
     ViewData["Title"] = "Home Page";
 }
 
+    <span id="status">&nbsp;0 selected features</span>
 @{
     await Html.RenderPartialAsync("_NavigationBar");
 }
+
 <script type="text/javascript">
+
+    var container = document.getElementById('popup');
+    var content = document.getElementById('popup-content');
+    var closer = document.getElementById('popup-closer');
+
+    var overlay = new ol.Overlay({
+        element: container,
+        autoPan: true,
+        autoPanAnimation: {
+            duration: 250
+        }
+    });
+
+    closer.onclick = function() {
+        overlay.setPosition(undefined);
+        closer.blur();
+        return false;
+    };
+
+    var features = [new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([19.978618, 50.060601])))];
+
+    var source = new ol.source.Vector({
+      features: features
+    });
+
+    var points = new ol.layer.Vector({
+        name: 'points',
+        source: source,
+        style: new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 10,
+                stroke: new ol.style.Stroke({
+                    color: '#fff'
+                }),
+                fill: new ol.style.Fill({
+                    color: '#3399CC'
+                })
+            }),
+        })
+    });
 
     var background = new ol.layer.Tile({
         name: 'background',
@@ -21,8 +63,9 @@
     });
 
     var map = new ol.Map({
-        layers: [background, wms],
+        layers: [background, wms, points],
         target: 'map',
+        overlays: [overlay],
         view: new ol.View({
             center: ol.proj.fromLonLat([19.978618, 50.060601]),
             zoom: 12
@@ -33,10 +76,12 @@
         var layer_name = this.value;
         var button = this;
         map.getLayers().forEach(function (layer) {
+            console.log(layer.get('name'));
+            console.log(layer.get('visible'));
             if (layer.get('name') === layer_name) {
-                var is_visible = layer.get('visible');
-                layer.setVisible(!is_visible);
-                if (is_visible) {
+                var isVisible = layer.get('visible');
+                layer.setVisible(!isVisible);
+                if (isVisible) {
                     button.className = 'dropdown-item text-black bg-light';
                 } else {
                     button.className = 'dropdown-item text-white bg-success';
@@ -49,5 +94,50 @@
     buttons.forEach((btn) => {
         btn.addEventListener("click", changeVisibility);
     });
-</script>
 
+    var wktReader = new ol.format.WKT();
+    var interaction = new ol.interaction.Select({
+        //condition: ol.events.condition.click,
+        condition: ol.events.condition.pointerMove,
+    });
+    map.addInteraction(interaction);
+    interaction.on('select', function (e) {
+        var selectFeatures = interaction.getFeatures().getArray();
+        document.getElementById('status').innerHTML = '&nbsp;' +
+            e.target.getFeatures().getLength() +
+            ' selected features (last operation selected ' + e.selected.length +
+            ' and deselected ' + e.deselected.length + ' features)';
+        if (selectFeatures.length !== 0) {
+                    var coordinate = selectFeatures[0].getGeometry().getCoordinates();
+        var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
+        content.innerHTML = '<p>You clicked here:</p><code>' + hdms +'</code>';
+        overlay.setPosition(coordinate);
+        } else {
+            overlay.setPosition(undefined);
+            closer.blur();
+            return false;
+        }
+
+        $.ajax({
+            contentType: "application/json; charset=utf-8",
+            type: "POST",
+            url: "/grid",
+            data: wktReader.writeFeatures(selectFeatures, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' }),
+            success: function (data) {
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('error while post');
+            }
+        });
+    });
+
+    map.on('singleclick', function(evt) {
+        var coordinate = evt.coordinate;
+        var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
+
+        content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
+            '</code>';
+        overlay.setPosition(coordinate);
+    });
+</script>

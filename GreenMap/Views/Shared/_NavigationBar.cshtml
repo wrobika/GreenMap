@@ -15,6 +15,7 @@
                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                     <button value="background" type="button" class="dropdown-item text-white bg-success">background</button>
                     <button value="wms" type="button" class="dropdown-item text-white bg-success">wms</button>
+                    <button value="points" type="button" class="dropdown-item text-white bg-success">points</button>
                 </div>
             </div>
         </form>
@@ -22,4 +23,8 @@
             await Html.RenderPartialAsync("_SearchModal");
         }
     </nav>
+</div>
+<div id="popup" class="ol-popup">
+    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+    <div id="popup-content"></div>
 </div>
