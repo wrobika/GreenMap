@@ -1,0 +1,120 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Wyszukaj obiekt</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row">
+                        <label for="name" class="col-sm-5 col-form-label">Nazwa obiektu</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="name" placeholder="example">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="rbdh" class="col-sm-5 col-form-label">Numer RBDH</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" id="rbdh" placeholder="example">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="location" class="col-sm-5 col-form-label">Lokalizacja (dzielnica)</label>
+                        <div class="col-sm-7">
+                            <select class="form-control" id="location">
+                                <option>Nowa Huta</option>
+                                <option>Podgórze</option>
+                                <option>i cała masa innych</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="coordinates" class="col-sm-5 col-form-label">Współrzędne geograficzne (EPSG 2180)</label>
+                        <div class="col-sm-7">
+                            <div class="row">
+                                <div class="col" id="coordinates">
+                                    <input type="number" class="form-control" placeholder="Długość geograficzna">
+                                </div>
+                                <div class="col" id="coordinates">
+                                    <input type="number" class="form-control" placeholder="Szerokość geograficzna">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="status" class="col-sm-5 col-form-label">Status otworu (wg eksploatacji)</label>
+                        <div class="col-sm-7">
+                            <select class="form-control" id="status">
+                                <option>eksploatacyjny</option>
+                                <option>monitoringowy</option>
+                                <option>zlikfidowany</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="deep" class="col-sm-5 col-form-label">Głębokość do zwierciadła [m]</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" id="deep" placeholder="głębokość">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="filtering" class="col-sm-5 col-form-label">Współczynnik filtracji [m/s]</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" id="filtering" placeholder="example">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="classification" class="col-sm-5 col-form-label">Klasyfikacja hydrogeologiczna gleby/gruntu</label>
+                        <div class="col-sm-7">
+                            <select class="form-control" id="classification">
+                                <option>przepuszczalna</option>
+                                <option>półprzepuszczalna</option>
+                                <option>nieprzepuszczalna</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="impurity" class="col-sm-5 col-form-label">Zanieczyszczenie gleby/gruntu</label>
+                        <div class="col-sm-7">
+                            <select class="form-control" id="impurity">
+                                <option>tak</option>
+                                <option>nie</option>
+                                <option>brak danych</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="quality1" class="col-sm-5 col-form-label">Jakość wody I</label>
+                        <div class="col-sm-7">
+                            <select class="form-control" id="quality1">
+                                <option>I</option>
+                                <option>II</option>
+                                <option>III</option>
+                                <option>IV</option>
+                                <option>V</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="quality2" class="col-sm-5 col-form-label">Jakość wody II</label>
+                        <div class="col-sm-7">
+                            <select class="form-control" id="quality2">
+                                <option>klasa1</option>
+                                <option>klasa2</option>
+                                <option>klasa3</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block">Wyszukaj</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

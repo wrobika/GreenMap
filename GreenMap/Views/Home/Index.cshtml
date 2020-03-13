@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@{
+    await Html.RenderPartialAsync("_NavigationBar");
+}
+<script type="text/javascript">
+
+    var background = new ol.layer.Tile({
+        name: 'background',
+        source: new ol.source.OSM()
+    });
+
+    var wms = new ol.layer.Tile({
+        name: 'wms',
+        source: new ol.source.TileWMS({
+            url: 'https://ahocevar.com/geoserver/wms',
+            params: { 'LAYERS': 'topp:states', 'TILED': true },
+        })
+    });
+
+    var map = new ol.Map({
+        layers: [background, wms],
+        target: 'map',
+        view: new ol.View({
+            center: ol.proj.fromLonLat([19.978618, 50.060601]),
+            zoom: 12
+        })
+    });
+
+    function changeVisibility() {
+        var layer_name = this.value;
+        var button = this;
+        map.getLayers().forEach(function (layer) {
+            if (layer.get('name') === layer_name) {
+                var is_visible = layer.get('visible');
+                layer.setVisible(!is_visible);
+                if (is_visible) {
+                    button.className = 'dropdown-item text-black bg-light';
+                } else {
+                    button.className = 'dropdown-item text-white bg-success';
+                }
+            }
+        });
+    }
+
+    let buttons = document.querySelectorAll('.dropdown-item')
+    buttons.forEach((btn) => {
+        btn.addEventListener("click", changeVisibility);
+    });
+</script>
+
