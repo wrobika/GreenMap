@@ -1,6 +1,7 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@{ 
+    var layerNames = new string[] { "mapa", "zieleń", "obiekty", "cieki/zbiorniki" };
+}
+    
 
 <div id="map" class="map">
     <nav class="navbar navbar-light bg-white">
@@ -13,9 +14,10 @@
                     Widoczność warstw
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <button value="background" type="button" class="dropdown-item text-white bg-success">background</button>
-                    <button value="wms" type="button" class="dropdown-item text-white bg-success">wms</button>
-                    <button value="points" type="button" class="dropdown-item text-white bg-success">points</button>
+                    @foreach (var name in layerNames)
+                    {
+                        <button value=@name type="button" class="dropdown-item text-white bg-success">@name</button>
+                    }
                 </div>
             </div>
         </form>

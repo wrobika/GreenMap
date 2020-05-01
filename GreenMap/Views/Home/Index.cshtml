@@ -7,7 +7,11 @@
     await Html.RenderPartialAsync("_NavigationBar");
     var epionierDbContext = new epionierContext();
     var zielenController = new GreenMap.Controllers.ZielenController(epionierDbContext);
-    var greenery = zielenController.GetZielen();
+    var cbdhController = new GreenMap.Controllers.CbdhObjController(epionierDbContext);
+    var hydroController = new GreenMap.Controllers.HydroController(epionierDbContext);
+    var greenery = await zielenController.GetZielen();
+    var objects = await cbdhController.GetCbdhObj();
+    var hydro = await hydroController.GetHydro();
 }
 
 <script type="text/javascript">
@@ -32,26 +36,27 @@
 
     proj4.defs('EPSG:2180', '+proj=tmerc + lat_0=0 + lon_0=19 + k=0.9993 + x_0=500000 + y_0=-5300000 + ellps=GRS80 + towgs84=0, 0, 0, 0, 0, 0, 0 + units=m + no_defs');
     ol.proj.proj4.register(proj4);
-
-    var greeneryArray = @Html.Raw(Json.Serialize(greenery.Result));
     var wktReader = new ol.format.WKT();
-    var greeneryFeatures = [];
-    for (var green of greeneryArray) {
-        console.log(green);
-        var feature = wktReader.readFeature(green);
-        feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
-        greeneryFeatures.push(feature);
+
+    function getLayerSource(objectsArray) {
+        var featuresArray = [];
+        for (var obj of objectsArray) {
+            var feature = wktReader.readFeature(obj);
+            feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
+            featuresArray.push(feature);
+        }
+        return new ol.source.Vector({
+            features: featuresArray
+        });
     }
 
-    var features = [new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([19.978618, 50.060601])))];
-
-    var greenerySource = new ol.source.Vector({
-      features: greeneryFeatures
-    });
+    var greeneryArray = @Html.Raw(Json.Serialize(greenery));
+    var objectArray = @Html.Raw(Json.Serialize(objects));
+    var hydroArray = @Html.Raw(Json.Serialize(hydro));
 
     var greeneryLayer = new ol.layer.Vector({
-        name: 'points',
-        source: greenerySource,
+        name: 'zieleń',
+        source: getLayerSource(greeneryArray),
         style: new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: 'Green'
@@ -62,8 +67,58 @@
         })
     });
 
+    var objectCluster = new ol.source.Cluster({
+        distance: 50,
+        source: getLayerSource(objectArray)
+    });
+
+    var objectLayer = new ol.layer.Vector({
+        name: 'obiekty',
+        source: objectCluster,
+        style: function (feature) {
+            var size = feature.get('features').length;
+            if (size === 1) {
+                style = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 10,
+                        fill: new ol.style.Fill({
+                            color: 'DarkBlue'
+                        })
+                    })
+                })
+            }
+            else {
+                style = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 10,
+                        fill: new ol.style.Fill({
+                            color: 'DarkBlue'
+                        })
+                    }),
+                    text: new ol.style.Text({
+                        text: size.toString(),
+                        fill: new ol.style.Fill({
+                            color: 'White'
+                        })
+                    })
+                });
+            }
+            return style;
+        }
+    });
+
+    var hydroLayer = new ol.layer.Vector({
+        name: 'cieki/zbiorniki',
+        source: getLayerSource(hydroArray),
+        style: new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: 'Aquamarine'
+            })
+        })
+    }); 
+
     var background = new ol.layer.Tile({
-        name: 'background',
+        name: 'mapa',
         source: new ol.source.OSM()
     });
 
@@ -76,7 +131,7 @@
     });
 
     var map = new ol.Map({
-        layers: [background, wms, greeneryLayer],
+        layers: [background, wms, greeneryLayer, objectLayer, hydroLayer],
         target: 'map',
         overlays: [overlay],
         view: new ol.View({
@@ -89,8 +144,6 @@
         var layer_name = this.value;
         var button = this;
         map.getLayers().forEach(function (layer) {
-            console.log(layer.get('name'));
-            console.log(layer.get('visible'));
             if (layer.get('name') === layer_name) {
                 var isVisible = layer.get('visible');
                 layer.setVisible(!isVisible);
@@ -111,14 +164,7 @@
     var wktReader = new ol.format.WKT();
     var interaction = new ol.interaction.Select({
         condition: ol.events.condition.click,
-        style: new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: 'DarkGreen'
-            }),
-            fill: new ol.style.Fill({
-                color: 'Green'
-            })
-        })
+        layers: [objectLayer]
         //condition: ol.events.condition.pointerMove,
     });
     map.addInteraction(interaction);

@@ -29,7 +29,7 @@ namespace GreenMap.Controllers
             return wkt;
         }
 
-        public static string ToWkt(Zielen greenery)
+        private static string ToWkt(Zielen greenery)
         {
             if (greenery.Geom != null)
                 return greenery.Geom.ToString();
