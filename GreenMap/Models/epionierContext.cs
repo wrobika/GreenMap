@@ -7,18 +7,14 @@ namespace GreenMap
 {
     public partial class epionierContext : DbContext
     {
-        public epionierContext(IConfiguration configuration)
+        public epionierContext()
         {
-            Configuration = configuration;
         }
 
-        public epionierContext(DbContextOptions<epionierContext> options, IConfiguration configuration)
+        public epionierContext(DbContextOptions<epionierContext> options)
             : base(options)
         {
-            Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         public virtual DbSet<CbdhObj> CbdhObj { get; set; }
         public virtual DbSet<Dzielnice> Dzielnice { get; set; }
@@ -32,9 +28,10 @@ namespace GreenMap
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql(Configuration.GetConnectionString("EpionierContext"), 
-                    x => x.UseNetTopologySuite());
+                var configuration = new ConfigurationBuilder().
+                    AddJsonFile(@"C:\Users\wnaziemiec\AppData\Roaming\Microsoft\UserSecrets\aspnet-GreenMap-F8C496C6-DBED-4523-A5C8-A991D3B79B61\secrets.json", optional: false).Build();
+                var connectionString = configuration.GetConnectionString("EpionierContext");
+                optionsBuilder.UseNpgsql(connectionString, x => x.UseNetTopologySuite());
             }
         }
 
