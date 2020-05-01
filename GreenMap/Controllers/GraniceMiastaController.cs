@@ -23,16 +23,13 @@ namespace GreenMap.Controllers
 
         // GET: api/GraniceMiasta
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<string>>> GetGraniceMiasta()
+        public async Task<List<string>> GetGraniceMiasta()
         {
-            var boundaries = await _context.GraniceMiasta.ToListAsync();
-            var wkt = boundaries.ConvertAll(new Converter<GraniceMiasta, string>(ToWkt));
+            var wkt = await _context.GraniceMiasta
+                .Where(item => item.Geom != null)
+                .Select(item => item.Geom.ToString())
+                .ToListAsync();
             return wkt;
-        }
-
-        public static string ToWkt(GraniceMiasta border)
-        {
-            return border.Geom.ToString();
         }
     }
 }

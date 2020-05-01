@@ -11,38 +11,38 @@ namespace GreenMap.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CbdhObjController : ControllerBase
+    public class DzielniceController : ControllerBase
     {
         private readonly epionierContext _context;
 
-        public CbdhObjController(epionierContext context)
+        public DzielniceController(epionierContext context)
         {
             _context = context;
         }
 
-        // GET: api/CbdhObj
+        // GET: api/Dzielnice
         [HttpGet]
-        public async Task<List<string>> GetCbdhObj()
+        public async Task<List<string>> GetDzielnice()
         {
-            var wkt = await _context.CbdhObj
+            var wkt = await _context.Dzielnice
                 .Where(item => item.Geom != null)
                 .Select(item => item.Geom.ToString())
                 .ToListAsync();
             return wkt;
         }
 
-        // GET: api/CbdhObj/5
+        // GET: api/Dzielnice/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CbdhObj>> GetCbdhObj(decimal id)
+        public async Task<ActionResult<Dzielnice>> GetDzielnice(int id)
         {
-            var cbdhObj = await _context.CbdhObj.FindAsync(id);
+            var dzielnice = await _context.Dzielnice.FindAsync(id);
 
-            if (cbdhObj == null)
+            if (dzielnice == null)
             {
                 return NotFound();
             }
 
-            return cbdhObj;
+            return dzielnice;
         }
     }
 }

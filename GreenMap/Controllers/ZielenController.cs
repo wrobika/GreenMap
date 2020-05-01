@@ -24,17 +24,11 @@ namespace GreenMap.Controllers
         [HttpGet]
         public async Task<List<string>> GetZielen()
         {
-            var greenery = await _context.Zielen.ToListAsync();
-            var wkt = greenery.ConvertAll(new Converter<Zielen, string>(ToWkt));
+            var wkt = await _context.Zielen
+                .Where(item => item.Geom != null)
+                .Select(item => item.Geom.ToString())
+                .ToListAsync();
             return wkt;
-        }
-
-        private static string ToWkt(Zielen greenery)
-        {
-            if (greenery.Geom != null)
-                return greenery.Geom.ToString();
-            else
-                return "MULTIPOLYGON EMPTY";
         }
     }
 }

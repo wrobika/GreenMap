@@ -24,17 +24,11 @@ namespace GreenMap.Controllers
         [HttpGet]
         public async Task<List<string>> GetHydro()
         {
-            var hydro = await _context.Hydro.ToListAsync();
-            var wkt = hydro.ConvertAll(new Converter<Hydro, string>(ToWkt));
+            var wkt = await _context.Hydro
+                .Where(item => item.Geom != null)
+                .Select(item => item.Geom.ToString())
+                .ToListAsync();
             return wkt;
-        }
-
-        private static string ToWkt(Hydro hydro)
-        {
-            if (hydro.Geom != null)
-                return hydro.Geom.ToString();
-            else
-                return "MULTIPOLYGON EMPTY";
         }
 
         // GET: api/Hydro/5

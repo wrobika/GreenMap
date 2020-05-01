@@ -9,9 +9,13 @@
     var zielenController = new GreenMap.Controllers.ZielenController(epionierDbContext);
     var cbdhController = new GreenMap.Controllers.CbdhObjController(epionierDbContext);
     var hydroController = new GreenMap.Controllers.HydroController(epionierDbContext);
+    var dzielniceController = new GreenMap.Controllers.DzielniceController(epionierDbContext);
+    var miastoController = new GreenMap.Controllers.GraniceMiastaController(epionierDbContext);
     var greenery = await zielenController.GetZielen();
     var objects = await cbdhController.GetCbdhObj();
     var hydro = await hydroController.GetHydro();
+    var districts = await dzielniceController.GetDzielnice();
+    var city = await miastoController.GetGraniceMiasta();
 }
 
 <script type="text/javascript">
@@ -34,6 +38,11 @@
         return false;
     };
 
+    function colorWithAlpha(color, alpha) {
+        const [r,g,b] = Array.from(ol.color.asArray(color));
+        return ol.color.asString([r,g,b,alpha]);
+    }
+
     proj4.defs('EPSG:2180', '+proj=tmerc + lat_0=0 + lon_0=19 + k=0.9993 + x_0=500000 + y_0=-5300000 + ellps=GRS80 + towgs84=0, 0, 0, 0, 0, 0, 0 + units=m + no_defs');
     ol.proj.proj4.register(proj4);
     var wktReader = new ol.format.WKT();
@@ -53,6 +62,8 @@
     var greeneryArray = @Html.Raw(Json.Serialize(greenery));
     var objectArray = @Html.Raw(Json.Serialize(objects));
     var hydroArray = @Html.Raw(Json.Serialize(hydro));
+    var districtArray = @Html.Raw(Json.Serialize(districts));
+    var cityArray = @Html.Raw(Json.Serialize(city));
 
     var greeneryLayer = new ol.layer.Vector({
         name: 'zieleń',
@@ -62,7 +73,7 @@
                 color: 'Green'
             }),
             fill: new ol.style.Fill({
-                color: 'LimeGreen'
+                color: colorWithAlpha('LimeGreen', 0.7)
             })
         })
     });
@@ -117,6 +128,31 @@
         })
     }); 
 
+    var districtLayer = new ol.layer.Vector({
+        name: 'dzielnice',
+        source: getLayerSource(districtArray),
+        style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'Gold',
+                width: 2
+            }),
+            fill: new ol.style.Fill({
+                color: colorWithAlpha('Gold', 0.5)
+            })
+        })
+    });
+
+    var cityLayer = new ol.layer.Vector({
+        name: 'miasto',
+        source: getLayerSource(cityArray),
+        style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: colorWithAlpha('OrangeRed',0.7),
+                width: 2
+            })
+        })
+    });
+
     var background = new ol.layer.Tile({
         name: 'mapa',
         source: new ol.source.OSM()
@@ -131,7 +167,8 @@
     });
 
     var map = new ol.Map({
-        layers: [background, wms, greeneryLayer, objectLayer, hydroLayer],
+        layers: [background, cityLayer, districtLayer, wms,
+            greeneryLayer, hydroLayer, objectLayer],
         target: 'map',
         overlays: [overlay],
         view: new ol.View({
