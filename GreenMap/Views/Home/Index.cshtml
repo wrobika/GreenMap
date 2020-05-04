@@ -11,11 +11,16 @@
     var hydroController = new GreenMap.Controllers.HydroController(epionierDbContext);
     var dzielniceController = new GreenMap.Controllers.DzielniceController(epionierDbContext);
     var miastoController = new GreenMap.Controllers.GraniceMiastaController(epionierDbContext);
+    var odwiertController = new GreenMap.Controllers.OdwiertController(epionierDbContext);
+    var zwierciadloController = new GreenMap.Controllers.ZwierciadloGlController(epionierDbContext);
     var greenery = await zielenController.GetZielen();
     var objects = await cbdhController.GetCbdhObj();
     var hydro = await hydroController.GetHydro();
     var districts = await dzielniceController.GetDzielnice();
     var city = await miastoController.GetGraniceMiasta();
+    var drilling = await odwiertController.GetOdwiert();
+    var mirror = await zwierciadloController.GetZwierciadloGl();
+    var layersProperties = LayersProperties.Layers;
 }
 
 <script type="text/javascript">
@@ -38,7 +43,10 @@
         return false;
     };
 
-    function colorWithAlpha(color, alpha) {
+    function colorWithAlpha(name) {
+        var layer = layersColor[name];
+        var color = layer.color;
+        var alpha = layer.opacity;
         const [r,g,b] = Array.from(ol.color.asArray(color));
         return ol.color.asString([r,g,b,alpha]);
     }
@@ -64,16 +72,19 @@
     var hydroArray = @Html.Raw(Json.Serialize(hydro));
     var districtArray = @Html.Raw(Json.Serialize(districts));
     var cityArray = @Html.Raw(Json.Serialize(city));
+    var drillingArray = @Html.Raw(Json.Serialize(drilling));
+    var mirrorArray = @Html.Raw(Json.Serialize(mirror));
+    var layersColor = @Html.Raw(Json.Serialize(layersProperties));
 
     var greeneryLayer = new ol.layer.Vector({
         name: 'zieleń',
         source: getLayerSource(greeneryArray),
         style: new ol.style.Style({
             stroke: new ol.style.Stroke({
-                color: 'Green'
+                color: layersColor['zieleń'].stroke
             }),
             fill: new ol.style.Fill({
-                color: colorWithAlpha('LimeGreen', 0.7)
+                color: colorWithAlpha('zieleń')
             })
         })
     });
@@ -93,7 +104,7 @@
                     image: new ol.style.Circle({
                         radius: 10,
                         fill: new ol.style.Fill({
-                            color: 'DarkBlue'
+                            color: colorWithAlpha('obiekty')
                         })
                     })
                 })
@@ -103,7 +114,82 @@
                     image: new ol.style.Circle({
                         radius: 10,
                         fill: new ol.style.Fill({
-                            color: 'DarkBlue'
+                            color: colorWithAlpha('obiekty')
+                        })
+                    }),
+                    text: new ol.style.Text({
+                        text: size.toString(),
+                        fill: new ol.style.Fill({
+                            color: 'Black'
+                        })
+                    })
+                });
+            }
+            return style;
+        }
+    });
+
+    var hydroLayer = new ol.layer.Vector({
+        name: 'cieki/zbiorniki',
+        source: getLayerSource(hydroArray),
+        style: new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: colorWithAlpha('cieki/zbiorniki')
+            })
+        })
+    });
+
+    var districtLayer = new ol.layer.Vector({
+        name: 'dzielnice',
+        source: getLayerSource(districtArray),
+        style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: layersColor['dzielnice'].stroke,
+                width: 2
+            }),
+            fill: new ol.style.Fill({
+                color: colorWithAlpha('dzielnice')
+            })
+        })
+    });
+
+    var cityLayer = new ol.layer.Vector({
+        name: 'miasto',
+        source: getLayerSource(cityArray),
+        style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: colorWithAlpha('miasto'),
+                width: 2
+            })
+        })
+    });
+
+    var drillingCluster = new ol.source.Cluster({
+        distance: 50,
+        source: getLayerSource(drillingArray)
+    });
+
+    var drillingLayer = new ol.layer.Vector({
+        name: 'odwierty',
+        source: drillingCluster,
+        style: function (feature) {
+            var size = feature.get('features').length;
+            if (size === 1) {
+                style = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 9,
+                        fill: new ol.style.Fill({
+                            color: colorWithAlpha('odwierty')
+                        })
+                    })
+                })
+            }
+            else {
+                style = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 9,
+                        fill: new ol.style.Fill({
+                            color: colorWithAlpha('odwierty')
                         })
                     }),
                     text: new ol.style.Text({
@@ -118,39 +204,44 @@
         }
     });
 
-    var hydroLayer = new ol.layer.Vector({
-        name: 'cieki/zbiorniki',
-        source: getLayerSource(hydroArray),
-        style: new ol.style.Style({
-            fill: new ol.style.Fill({
-                color: 'Aquamarine'
-            })
-        })
-    }); 
-
-    var districtLayer = new ol.layer.Vector({
-        name: 'dzielnice',
-        source: getLayerSource(districtArray),
-        style: new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: 'Gold',
-                width: 2
-            }),
-            fill: new ol.style.Fill({
-                color: colorWithAlpha('Gold', 0.5)
-            })
-        })
+    var mirrorCluster = new ol.source.Cluster({
+        distance: 50,
+        source: getLayerSource(mirrorArray)
     });
 
-    var cityLayer = new ol.layer.Vector({
-        name: 'miasto',
-        source: getLayerSource(cityArray),
-        style: new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: colorWithAlpha('OrangeRed',0.7),
-                width: 2
-            })
-        })
+    var mirrorLayer = new ol.layer.Vector({
+        name: 'zwierciadło',
+        source: mirrorCluster,
+        style: function (feature) {
+            var size = feature.get('features').length;
+            if (size === 1) {
+                style = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 11,
+                        fill: new ol.style.Fill({
+                            color: colorWithAlpha('zwierciadło')
+                        })
+                    })
+                })
+            }
+            else {
+                style = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 11,
+                        fill: new ol.style.Fill({
+                            color: colorWithAlpha('zwierciadło')
+                        })
+                    }),
+                    text: new ol.style.Text({
+                        text: size.toString(),
+                        fill: new ol.style.Fill({
+                            color: 'White'
+                        })
+                    })
+                });
+            }
+            return style;
+        }
     });
 
     var background = new ol.layer.Tile({
@@ -168,7 +259,7 @@
 
     var map = new ol.Map({
         layers: [background, cityLayer, districtLayer, wms,
-            greeneryLayer, hydroLayer, objectLayer],
+            greeneryLayer, hydroLayer, mirrorLayer, objectLayer, drillingLayer],
         target: 'map',
         overlays: [overlay],
         view: new ol.View({
@@ -178,16 +269,22 @@
     });
 
     function changeVisibility() {
-        var layer_name = this.value;
+        var layerName = this.value;
         var button = this;
+        var img = document.getElementById('eye_' + layerName);
         map.getLayers().forEach(function (layer) {
-            if (layer.get('name') === layer_name) {
+            if (layer.get('name') === layerName) {
                 var isVisible = layer.get('visible');
                 layer.setVisible(!isVisible);
                 if (isVisible) {
                     button.className = 'dropdown-item text-black bg-light';
+                    img.src = '@Url.Content("~/css/eye_closed.png")';
                 } else {
-                    button.className = 'dropdown-item text-white bg-success';
+                    button.className = 'dropdown-item';
+                    button.style = 'background-color:' + layersColor[layerName].color
+                        + ';opacity:' + layersColor[layerName].opacity
+                        + ';color:' + layersColor[layerName].text;
+                    img.src = '@Url.Content("~/css/eye.png")';
                 }
             }
         });
