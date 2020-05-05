@@ -33,6 +33,19 @@ namespace GreenMap.Controllers
             return wkt;
         }
 
+        public async Task<List<string>> GetZwierciadloGl(decimal upperBound, decimal lowerBound)
+        {
+            var wkt = await _context.ZwierciadloGl
+                 .Where(item => item.EurefX != null)
+                 .Where(item => item.EurefY != null)
+                 .Where(item => item.GlUstabilizowana != null)
+                 .Where(item => item.GlUstabilizowana.Value < upperBound)
+                 .Where(item => item.GlUstabilizowana.Value > lowerBound)
+                 .Select(item => new Point(item.EurefY.Value, item.EurefX.Value).ToString())
+                 .ToListAsync();
+            return wkt;
+        }
+
         // GET: api/ZwierciadloGl/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ZwierciadloGl>> GetZwierciadloGl(int id)

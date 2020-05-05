@@ -11,5 +11,7 @@ namespace GreenMap.Models
         public double Opacity { get; set; }
         public string Stroke { get; set; }
         public string Text { get; set; }
+        public bool Cluster { get; set; }
+        public int Radius { get; set; }
     }
 }

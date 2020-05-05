@@ -19,7 +19,7 @@
     var districts = await dzielniceController.GetDzielnice();
     var city = await miastoController.GetGraniceMiasta();
     var drilling = await odwiertController.GetOdwiert();
-    var mirror = await zwierciadloController.GetZwierciadloGl();
+    var mirror = await zwierciadloController.GetZwierciadloGl(0, -0.5M);
     var layersProperties = LayersProperties.Layers;
 }
 
@@ -44,7 +44,7 @@
     };
 
     function colorWithAlpha(name) {
-        var layer = layersColor[name];
+        var layer = layerProperties[name];
         var color = layer.color;
         var alpha = layer.opacity;
         const [r,g,b] = Array.from(ol.color.asArray(color));
@@ -67,182 +67,78 @@
         });
     }
 
-    var greeneryArray = @Html.Raw(Json.Serialize(greenery));
-    var objectArray = @Html.Raw(Json.Serialize(objects));
-    var hydroArray = @Html.Raw(Json.Serialize(hydro));
-    var districtArray = @Html.Raw(Json.Serialize(districts));
-    var cityArray = @Html.Raw(Json.Serialize(city));
-    var drillingArray = @Html.Raw(Json.Serialize(drilling));
-    var mirrorArray = @Html.Raw(Json.Serialize(mirror));
-    var layersColor = @Html.Raw(Json.Serialize(layersProperties));
-
-    var greeneryLayer = new ol.layer.Vector({
-        name: 'zieleń',
-        source: getLayerSource(greeneryArray),
-        style: new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: layersColor['zieleń'].stroke
-            }),
-            fill: new ol.style.Fill({
-                color: colorWithAlpha('zieleń')
-            })
-        })
-    });
-
-    var objectCluster = new ol.source.Cluster({
-        distance: 50,
-        source: getLayerSource(objectArray)
-    });
-
-    var objectLayer = new ol.layer.Vector({
-        name: 'obiekty',
-        source: objectCluster,
-        style: function (feature) {
-            var size = feature.get('features').length;
-            if (size === 1) {
-                style = new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: 10,
-                        fill: new ol.style.Fill({
-                            color: colorWithAlpha('obiekty')
-                        })
-                    })
-                })
-            }
-            else {
-                style = new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: 10,
-                        fill: new ol.style.Fill({
-                            color: colorWithAlpha('obiekty')
-                        })
-                    }),
-                    text: new ol.style.Text({
-                        text: size.toString(),
-                        fill: new ol.style.Fill({
-                            color: 'Black'
-                        })
-                    })
-                });
-            }
-            return style;
+    function getLayer(layerName) {
+        if (layerProperties[layerName].cluster === true) {
+            return getClusterLayer(layerName);
         }
-    });
-
-    var hydroLayer = new ol.layer.Vector({
-        name: 'cieki/zbiorniki',
-        source: getLayerSource(hydroArray),
-        style: new ol.style.Style({
-            fill: new ol.style.Fill({
-                color: colorWithAlpha('cieki/zbiorniki')
-            })
-        })
-    });
-
-    var districtLayer = new ol.layer.Vector({
-        name: 'dzielnice',
-        source: getLayerSource(districtArray),
-        style: new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: layersColor['dzielnice'].stroke,
-                width: 2
-            }),
-            fill: new ol.style.Fill({
-                color: colorWithAlpha('dzielnice')
-            })
-        })
-    });
-
-    var cityLayer = new ol.layer.Vector({
-        name: 'miasto',
-        source: getLayerSource(cityArray),
-        style: new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: colorWithAlpha('miasto'),
-                width: 2
-            })
-        })
-    });
-
-    var drillingCluster = new ol.source.Cluster({
-        distance: 50,
-        source: getLayerSource(drillingArray)
-    });
-
-    var drillingLayer = new ol.layer.Vector({
-        name: 'odwierty',
-        source: drillingCluster,
-        style: function (feature) {
-            var size = feature.get('features').length;
-            if (size === 1) {
-                style = new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: 9,
-                        fill: new ol.style.Fill({
-                            color: colorWithAlpha('odwierty')
-                        })
-                    })
+        var layerStroke = layerProperties[layerName].stroke === null ? null : new ol.style.Stroke({
+            color: layerProperties[layerName].stroke,
+            width: 2
+        });
+        return new ol.layer.Vector({
+            name: layerName,
+            source: getLayerSource(layerObjects[layerName]),
+            style: new ol.style.Style({
+                stroke: layerStroke,
+                fill: new ol.style.Fill({
+                    color: colorWithAlpha(layerName)
                 })
-            }
-            else {
-                style = new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: 9,
-                        fill: new ol.style.Fill({
-                            color: colorWithAlpha('odwierty')
-                        })
-                    }),
-                    text: new ol.style.Text({
-                        text: size.toString(),
-                        fill: new ol.style.Fill({
-                            color: 'White'
-                        })
-                    })
-                });
-            }
-            return style;
-        }
-    });
+            })
+        });
+    }
 
-    var mirrorCluster = new ol.source.Cluster({
-        distance: 50,
-        source: getLayerSource(mirrorArray)
-    });
+    function getClusterLayer(layerName) {
+        var objectCluster = new ol.source.Cluster({
+            distance: 50,
+            source: getLayerSource(layerObjects[layerName])
+        });
+        return new ol.layer.Vector({
+            name: layerName,
+            source: objectCluster,
+            style: function (feature) {
+                var size = feature.get('features').length;
+                if (size === 1) {
+                    style = new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: layerProperties[layerName].radius,
+                            fill: new ol.style.Fill({
+                                color: colorWithAlpha(layerName)
+                            })
+                        })
+                    })
+                }
+                else {
+                    style = new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: layerProperties[layerName].radius,
+                            fill: new ol.style.Fill({
+                                color: colorWithAlpha(layerName)
+                            })
+                        }),
+                        text: new ol.style.Text({
+                            text: size.toString(),
+                            fill: new ol.style.Fill({
+                                color: layerProperties[layerName].text
+                            })
+                        })
+                    });
+                }
+                return style;
+            }
+        });
+    }
 
-    var mirrorLayer = new ol.layer.Vector({
-        name: 'zwierciadło',
-        source: mirrorCluster,
-        style: function (feature) {
-            var size = feature.get('features').length;
-            if (size === 1) {
-                style = new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: 11,
-                        fill: new ol.style.Fill({
-                            color: colorWithAlpha('zwierciadło')
-                        })
-                    })
-                })
-            }
-            else {
-                style = new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: 11,
-                        fill: new ol.style.Fill({
-                            color: colorWithAlpha('zwierciadło')
-                        })
-                    }),
-                    text: new ol.style.Text({
-                        text: size.toString(),
-                        fill: new ol.style.Fill({
-                            color: 'White'
-                        })
-                    })
-                });
-            }
-            return style;
-        }
-    });
+    var layerProperties = @Html.Raw(Json.Serialize(layersProperties));
+
+    var layerObjects = {
+        'miasto': @Html.Raw(Json.Serialize(city)),
+        'dzielnice': @Html.Raw(Json.Serialize(districts)),
+        'zieleń':@Html.Raw(Json.Serialize(greenery)),
+        'cieki/zbiorniki': @Html.Raw(Json.Serialize(hydro)),
+        'zwierciadło':  @Html.Raw(Json.Serialize(mirror)),
+        'obiekty': @Html.Raw(Json.Serialize(objects)),
+        'odwierty': @Html.Raw(Json.Serialize(drilling)),
+    };
 
     var background = new ol.layer.Tile({
         name: 'mapa',
@@ -257,9 +153,11 @@
         })
     });
 
+    var layers = [background, wms];
+    Object.keys(layerObjects).map(layerName => layers.push(getLayer(layerName)));
+
     var map = new ol.Map({
-        layers: [background, cityLayer, districtLayer, wms,
-            greeneryLayer, hydroLayer, mirrorLayer, objectLayer, drillingLayer],
+        layers: layers,
         target: 'map',
         overlays: [overlay],
         view: new ol.View({
@@ -278,12 +176,13 @@
                 layer.setVisible(!isVisible);
                 if (isVisible) {
                     button.className = 'dropdown-item text-black bg-light';
+                    button.style = 'color:black';
                     img.src = '@Url.Content("~/css/eye_closed.png")';
                 } else {
                     button.className = 'dropdown-item';
-                    button.style = 'background-color:' + layersColor[layerName].color
-                        + ';opacity:' + layersColor[layerName].opacity
-                        + ';color:' + layersColor[layerName].text;
+                    button.style = 'background-color:' + layerProperties[layerName].color
+                        + ';opacity:' + layerProperties[layerName].opacity
+                        + ';color:' + layerProperties[layerName].text;
                     img.src = '@Url.Content("~/css/eye.png")';
                 }
             }
