@@ -19,7 +19,15 @@
     var districts = await dzielniceController.GetDzielnice();
     var city = await miastoController.GetGraniceMiasta();
     var drilling = await odwiertController.GetOdwiert();
-    var mirror = await zwierciadloController.GetZwierciadloGl(0, -0.5M);
+    var mirrorI = await zwierciadloController.GetZwierciadloGl(0, -0.5M);
+    var mirrorII = await zwierciadloController.GetZwierciadloGl(-0.5M, -1M);
+    var mirrorIII = await zwierciadloController.GetZwierciadloGl(-1M, -2M);
+    var mirrorIV = await zwierciadloController.GetZwierciadloGl(-2M, -5M);
+    var mirrorV = await zwierciadloController.GetZwierciadloGl(-5M, -10M);
+    var mirrorVI = await zwierciadloController.GetZwierciadloGl(-10M, -15M);
+    var mirrorVII = await zwierciadloController.GetZwierciadloGl(-15, -20M);
+    var mirrorVIII = await zwierciadloController.GetZwierciadloGl(-20M, -30M);
+    var mirrorIX = await zwierciadloController.GetZwierciadloGl(-30M, -10000M);
     var layersProperties = LayersProperties.Layers;
 }
 
@@ -135,7 +143,15 @@
         'dzielnice': @Html.Raw(Json.Serialize(districts)),
         'zieleń':@Html.Raw(Json.Serialize(greenery)),
         'cieki/zbiorniki': @Html.Raw(Json.Serialize(hydro)),
-        'zwierciadło':  @Html.Raw(Json.Serialize(mirror)),
+        'zwierciadłoI':  @Html.Raw(Json.Serialize(mirrorI)),
+        'zwierciadłoII':  @Html.Raw(Json.Serialize(mirrorII)),
+        'zwierciadłoIII':  @Html.Raw(Json.Serialize(mirrorIII)),
+        'zwierciadłoIV':  @Html.Raw(Json.Serialize(mirrorIV)),
+        'zwierciadłoV':  @Html.Raw(Json.Serialize(mirrorV)),
+        'zwierciadłoVI':  @Html.Raw(Json.Serialize(mirrorVI)),
+        'zwierciadłoVII':  @Html.Raw(Json.Serialize(mirrorVII)),
+        'zwierciadłoVIII':  @Html.Raw(Json.Serialize(mirrorVIII)),
+        'zwierciadłoIX':  @Html.Raw(Json.Serialize(mirrorIX)),
         'obiekty': @Html.Raw(Json.Serialize(objects)),
         'odwierty': @Html.Raw(Json.Serialize(drilling)),
     };
