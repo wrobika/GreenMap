@@ -34,7 +34,6 @@ namespace GreenMap.Controllers
         }
 
         public async Task<Dictionary<string, string>> GetZwierciadloGlebokosc()
-        //public async Task<List<ZwierciadloGl>> GetZwierciadloGlebokosc()
         {
             var points = await _context.ZwierciadloGl
                  .Where(item => item.EurefX != null)
@@ -42,22 +41,11 @@ namespace GreenMap.Controllers
                  .Where(item => item.GlUstabilizowana != null)
                  .Select(item => new { item.EurefX, item.EurefY, item.GlUstabilizowana})
                  .ToListAsync();
-            //.ToDictionaryAsync(
-            //   item => new Point(item.EurefY.Value, item.EurefX.Value).ToString(),
-            //   item => item.GlUstabilizowana.Value);
             var wktDepthDictionary = new Dictionary<string, string>();
             foreach(var item in points)
             {
                 string wkt = new Point(item.EurefY.Value, item.EurefX.Value).ToString();
-                //if (wktDepthDictionary.ContainsKey(wkt))
-                //{
-                //    if(wktDepthDictionary[wkt] > item.GlUstabilizowana.Value)
-                //        wktDepthDictionary[wkt] = item.GlUstabilizowana.Value;
-                //}
-                //else
-                //{
-                    wktDepthDictionary[wkt] = DepthColor.GetColor(item.GlUstabilizowana.Value);
-                //}
+                wktDepthDictionary[wkt] = DepthColor.GetColor(item.GlUstabilizowana.Value);
             }
             return wktDepthDictionary;
         }

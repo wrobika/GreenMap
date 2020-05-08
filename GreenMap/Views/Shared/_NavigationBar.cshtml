@@ -6,6 +6,9 @@
 <div id="map" class="map">
     <nav class="navbar navbar-light bg-white">
         <form class="form-inline ml-auto">
+            <button style="display:none;" id="info" type="button" class="btn btn-success m-1" data-toggle="modal" data-target="#infoModal">
+                Info
+            </button>
             <button type="button" class="btn btn-success m-1" data-toggle="modal" data-target="#exampleModal">
                 Wyszukaj
             </button>
@@ -21,7 +24,7 @@
                             ";opacity:" + opacity +
                             ";color:" + layerProperties[name].Text;
                         <button value=@name type="button" class="dropdown-item" style=@layerStyle>
-                            <span><img id="eye_@name" src="~/css/eye.png" style="width:20px;opacity:1"/></span>
+                            <span><img id="eye_@name" src="~/css/eye.png" style="width:20px;opacity:1" /></span>
                             @name
                         </button>
                     }
@@ -30,6 +33,9 @@
         </form>
         @{
             await Html.RenderPartialAsync("_SearchModal");
+        }
+        @{
+            await Html.RenderPartialAsync("_InfoModal", new OdwiertInfo());
         }
     </nav>
 </div>

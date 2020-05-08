@@ -20,17 +20,16 @@
     var city = await miastoController.GetGraniceMiasta();
     var drilling = await odwiertController.GetOdwiert();
     var mirror = await zwierciadloController.GetZwierciadloGlebokosc();
-    var mirrorI = await zwierciadloController.GetZwierciadloGl(0, -0.5M);
-    var mirrorII = await zwierciadloController.GetZwierciadloGl(-0.5M, -1M);
-    var mirrorIII = await zwierciadloController.GetZwierciadloGl(-1M, -2M);
-    var mirrorIV = await zwierciadloController.GetZwierciadloGl(-2M, -5M);
-    var mirrorV = await zwierciadloController.GetZwierciadloGl(-5M, -10M);
-    var mirrorVI = await zwierciadloController.GetZwierciadloGl(-10M, -15M);
-    var mirrorVII = await zwierciadloController.GetZwierciadloGl(-15, -20M);
-    var mirrorVIII = await zwierciadloController.GetZwierciadloGl(-20M, -30M);
-    var mirrorIX = await zwierciadloController.GetZwierciadloGl(-30M, -10000M);
+    //var mirrorI = await zwierciadloController.GetZwierciadloGl(0, -0.5M);
+    //var mirrorII = await zwierciadloController.GetZwierciadloGl(-0.5M, -1M);
+    //var mirrorIII = await zwierciadloController.GetZwierciadloGl(-1M, -2M);
+    //var mirrorIV = await zwierciadloController.GetZwierciadloGl(-2M, -5M);
+    //var mirrorV = await zwierciadloController.GetZwierciadloGl(-5M, -10M);
+    //var mirrorVI = await zwierciadloController.GetZwierciadloGl(-10M, -15M);
+    //var mirrorVII = await zwierciadloController.GetZwierciadloGl(-15, -20M);
+    //var mirrorVIII = await zwierciadloController.GetZwierciadloGl(-20M, -30M);
+    //var mirrorIX = await zwierciadloController.GetZwierciadloGl(-30M, -10000M);
     var layersProperties = LayersProperties.Layers;
-    var depthColor = DepthColor.Ranges;
 }
 
 <script type="text/javascript">
@@ -77,11 +76,22 @@
             }
         }
         else {
-            for (var wkt of Object.keys(objects)) {
-                var feature = wktReader.readFeature(wkt);
-                feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
-                feature.set('color', objects[wkt]);
-                featuresArray.push(feature);
+            if (layerName === 'zwierciadło') {
+                for (var wkt of Object.keys(objects)) {
+                    var feature = wktReader.readFeature(wkt);
+                    feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
+                    feature.set('color', objects[wkt]);
+                    featuresArray.push(feature);
+                }
+            }
+            if (layerName === 'odwierty') {
+                for (var id of Object.keys(objects)) {
+                    var feature = wktReader.readFeature(objects[id]);
+                    feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
+                    feature.set('color', layerProperties[layerName].color);
+                    feature.setId(id);
+                    featuresArray.push(feature);
+                }
             }
         }
         return new ol.source.Vector({
@@ -225,50 +235,63 @@
         btn.addEventListener("click", changeVisibility);
     });
 
-    var wktReader = new ol.format.WKT();
+    var drillingLayer;
+    for (var layer of layers) {
+        if (layer.get('name') === 'odwierty')
+            drillingLayer = layer;
+    }
     var interaction = new ol.interaction.Select({
         condition: ol.events.condition.click,
-        layers: [objectLayer]
+        layers: [drillingLayer]
         //condition: ol.events.condition.pointerMove,
     });
     map.addInteraction(interaction);
     interaction.on('select', function (e) {
         var selectFeatures = interaction.getFeatures().getArray();
-        document.getElementById('status').innerHTML = '&nbsp;' +
-            e.target.getFeatures().getLength() +
-            ' selected features (last operation selected ' + e.selected.length +
-            ' and deselected ' + e.deselected.length + ' features)';
-        if (selectFeatures.length !== 0) {
+        //document.getElementById('status').innerHTML = '&nbsp;' +
+        //    e.target.getFeatures().getLength() +
+        //    ' selected features (last operation selected ' + e.selected.length +
+        //    ' and deselected ' + e.deselected.length + ' features)';
+        //if (selectFeatures.length !== 0) {
+        //    var coordinate = selectFeatures[0].getGeometry().getCoordinates();
+        //var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
+        //content.innerHTML = '<p>You clicked here:</p><code>' + hdms +'</code>';
+        //overlay.setPosition(coordinate);
+        //} else {
+        //    overlay.setPosition(undefined);
+        //    closer.blur();
+        //    return false;
+        //}
+        if (selectFeatures[0].get('features').length === 1) {
+            $.ajax({
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                url: "api/Odwiert/" + selectFeatures[0].get('features')[0].getId(),
+                success: function (point) {
+                    console.log(point);
                     var coordinate = selectFeatures[0].getGeometry().getCoordinates();
-        var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
-        content.innerHTML = '<p>You clicked here:</p><code>' + hdms +'</code>';
-        overlay.setPosition(coordinate);
-        } else {
-            overlay.setPosition(undefined);
-            closer.blur();
-            return false;
+                    document.getElementById('info').click();
+                    document.getElementById('infoName').innerText = point.nazwaObiektu;
+                    document.getElementById('infoRbdh').innerText = point.nrRbdh;
+                    document.getElementById('infoStatus').innerText = point.status;
+                    document.getElementById('infoDistrict').innerText = point.lokalizacja;
+                    document.getElementById('infoX').innerText = point.eurefX;
+                    document.getElementById('infoY').innerText = point.eurefY;
+                    overlay.setPosition(coordinate);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('error while request');
+                }
+            });
         }
-
-        $.ajax({
-            contentType: "application/json; charset=utf-8",
-            type: "POST",
-            url: "/grid",
-            data: wktReader.writeFeatures(selectFeatures, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' }),
-            success: function (data) {
-
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log('error while post');
-            }
-        });
     });
 
-    map.on('singleclick', function(evt) {
-        var coordinate = evt.coordinate;
-        var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
+    //map.on('singleclick', function(evt) {
+    //    var coordinate = evt.coordinate;
+    //    var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
 
-        content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
-            '</code>';
-        overlay.setPosition(coordinate);
-    });
+    //    content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
+    //        '</code>';
+    //    overlay.setPosition(coordinate);
+    //});
 </script>

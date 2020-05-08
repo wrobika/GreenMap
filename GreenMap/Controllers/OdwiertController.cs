@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GreenMap;
 using NetTopologySuite.Geometries;
+using GreenMap.Models;
 
 namespace GreenMap.Controllers
 {
@@ -23,19 +24,19 @@ namespace GreenMap.Controllers
 
         // GET: api/Odwiert
         [HttpGet]
-        public async Task<List<string>> GetOdwiert()
+        public async Task<Dictionary<long, string>> GetOdwiert()
         {
             var wkt = await _context.Odwiert
                 .Where(item => item.EurefX != null)
                 .Where(item => item.EurefY != null)
-                .Select(item => new Point(item.EurefY.Value, item.EurefX.Value).ToString())
-                .ToListAsync();
+                .ToDictionaryAsync(item => item.Objectid,
+                    item => new Point(item.EurefY.Value, item.EurefX.Value).ToString());
             return wkt;
         }
 
         // GET: api/Odwiert/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Odwiert>> GetOdwiert(long id)
+        public async Task<ActionResult<OdwiertInfo>> GetOdwiert(long id)
         {
             var odwiert = await _context.Odwiert.FindAsync(id);
 
@@ -44,7 +45,16 @@ namespace GreenMap.Controllers
                 return NotFound();
             }
 
-            return odwiert;
+            OdwiertInfo info = new OdwiertInfo
+            {
+                NazwaObiektu = odwiert.NazwaObiektu,
+                NrRbdh = odwiert.NrRbdh,
+                Lokalizacja = odwiert.Lokalizacja,
+                Status = odwiert.Status,
+                EurefX = odwiert.EurefX,
+                EurefY = odwiert.EurefY 
+            };
+            return info;
         }
     }
 }
