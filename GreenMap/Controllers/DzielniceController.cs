@@ -44,5 +44,15 @@ namespace GreenMap.Controllers
 
             return dzielnice;
         }
+
+        public async Task<ActionResult<string>> GetName(int? id)
+        {
+            if (!id.HasValue)
+                return new EmptyResult();
+            var dzielnice = await _context.Dzielnice.FindAsync(id.Value);
+            if (dzielnice == null)
+                return new EmptyResult();
+            return dzielnice.NazwaPelna;
+        }
     }
 }

@@ -275,8 +275,14 @@
                     document.getElementById('infoRbdh').innerText = point.nrRbdh;
                     document.getElementById('infoStatus').innerText = point.status;
                     document.getElementById('infoDistrict').innerText = point.lokalizacja;
-                    document.getElementById('infoX').innerText = point.eurefX;
-                    document.getElementById('infoY').innerText = point.eurefY;
+                    document.getElementById('infoCoord').innerText = point.wspolrzedne;
+                    document.getElementById('infoDepth').innerText = point.glebokoscZwierciadla;
+                    document.getElementById('infoFilter').innerText = point.filtracja;
+                    document.getElementById('infoHydro').innerText = point.hydroGleby;
+                    document.getElementById('infoImpurity').innerText = point.zanieczyszczenieGleby;
+                    document.getElementById('infoQuality').innerText = point.jakoscWody;
+                    document.getElementById('infIrrigation').innerText = point.nawodnienie;
+                    document.getElementById('infoProfile').innerText = point.profil;
                     overlay.setPosition(coordinate);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {

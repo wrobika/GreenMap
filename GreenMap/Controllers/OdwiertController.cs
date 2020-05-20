@@ -16,10 +16,14 @@ namespace GreenMap.Controllers
     public class OdwiertController : ControllerBase
     {
         private readonly epionierContext _context;
+        private readonly  DzielniceController _dzielniceController;
+        private readonly ZwierciadloGlController _zwierciadloController;
 
         public OdwiertController(epionierContext context)
         {
             _context = context;
+            _dzielniceController = new DzielniceController(_context);
+            _zwierciadloController = new ZwierciadloGlController(_context);
         }
 
         // GET: api/Odwiert
@@ -45,14 +49,16 @@ namespace GreenMap.Controllers
                 return NotFound();
             }
 
+            var dzielnica = await _dzielniceController.GetName(odwiert.DzielnicaId);
+            var zwierciadlo = await _zwierciadloController.GetGlebokosc(odwiert.NrRbdh);
             OdwiertInfo info = new OdwiertInfo
             {
                 NazwaObiektu = odwiert.NazwaObiektu,
                 NrRbdh = odwiert.NrRbdh,
-                Lokalizacja = odwiert.Lokalizacja,
+                Lokalizacja = dzielnica.Value,
                 Status = odwiert.Status,
-                EurefX = odwiert.EurefX,
-                EurefY = odwiert.EurefY 
+                Wspolrzedne = odwiert.EurefX.ToString() + " " + odwiert.EurefY.ToString(),
+                GlebokoscZwierciadla = zwierciadlo.Value
             };
             return info;
         }

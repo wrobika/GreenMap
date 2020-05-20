@@ -76,5 +76,17 @@ namespace GreenMap.Controllers
 
             return zwierciadloGl;
         }
+
+        public async Task<ActionResult<decimal?>> GetGlebokosc(int? nrRbdh)
+        {
+            if (!nrRbdh.HasValue)
+                return new EmptyResult();
+            var zwierciadloGl = await _context.ZwierciadloGl
+                .Where(item => item.NrRbdh == nrRbdh.Value)
+                .FirstOrDefaultAsync();
+            if (zwierciadloGl == null)
+                return new EmptyResult();
+            return zwierciadloGl.GlUstabilizowana;
+        }
     }
 }
