@@ -1,5 +1,14 @@
 ﻿@{ 
     var layerProperties = LayersProperties.Layers;
+    var epionierDbContext = new epionierContext();
+    var dzielniceController = new GreenMap.Controllers.DzielniceController(epionierDbContext);
+    var odwiertController = new GreenMap.Controllers.OdwiertController(epionierDbContext);
+    SelectList districtList = await dzielniceController.GetSelectList();
+    SelectList statusList = await odwiertController.GetStatusSelectList();
+    var partialViewData = new ViewDataDictionary(this.ViewData) {
+        { "districtList", districtList },
+        { "statusList", statusList }
+    };
 }
     
 
@@ -32,7 +41,7 @@
             </div>
         </form>
         @{
-            await Html.RenderPartialAsync("_SearchModal");
+            await Html.RenderPartialAsync("_SearchModal", new OdwiertSearch(), partialViewData);
         }
         @{
             await Html.RenderPartialAsync("_InfoModal", new OdwiertInfo());

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using GreenMap;
 using NetTopologySuite.Geometries;
 using GreenMap.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GreenMap.Controllers
 {
@@ -61,6 +62,15 @@ namespace GreenMap.Controllers
                 GlebokoscZwierciadla = zwierciadlo.Value
             };
             return info;
+        }
+
+        public async Task<SelectList> GetStatusSelectList()
+        {
+            var status = await _context.Odwiert
+                .Select(item => item.Status)
+                .Distinct()
+                .ToListAsync();
+            return new SelectList(status);
         }
     }
 }

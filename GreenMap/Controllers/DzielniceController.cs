@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GreenMap;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GreenMap.Controllers
 {
@@ -53,6 +54,15 @@ namespace GreenMap.Controllers
             if (dzielnice == null)
                 return new EmptyResult();
             return dzielnice.NazwaPelna;
+        }
+
+        public async Task<SelectList> GetSelectList()
+        {
+            var names = await _context.Dzielnice
+                .Select(item => item.Nazwa)
+                .Distinct()
+                .ToListAsync();
+            return new SelectList(names);
         }
     }
 }

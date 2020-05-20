@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
+using GreenMap.Models;
 
 namespace GreenMap
 {
@@ -409,9 +410,16 @@ namespace GreenMap
                 entity.Property(e => e.NrRbdh).HasColumnName("nr_rbdh");
             });
 
+            modelBuilder.Entity<OdwiertSearch>(entity =>
+            {
+                entity.HasNoKey();
+            });
+
             OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+        public DbSet<GreenMap.Models.OdwiertSearch> OdwiertSearch { get; set; }
     }
 }
