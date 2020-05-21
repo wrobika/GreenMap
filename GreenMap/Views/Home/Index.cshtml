@@ -244,6 +244,8 @@
                             feature.setId(id);
                             featuresArray.push(feature);
                         }
+                        layer.getSource().getSource().clear();
+                        layer.getSource().getSource().addFeatures(featuresArray);
                     }
                 });
             },
@@ -253,10 +255,43 @@
                 console.log(errorThrown);
             }
         });
+        $('#searchModal').modal('hide');
+    }
+    function removeFilter() {
+        $.ajax({
+            type: 'GET',
+            contentType: "application/json; charset=utf-8",
+            url: 'api/Odwiert',
+            cache: false,
+            success: function (data) {
+                map.getLayers().forEach(function (layer) {
+                    if (layer.get('name') === 'odwierty') {
+                        var featuresArray = [];
+                        for (var id of Object.keys(data)) {
+                            var feature = wktReader.readFeature(data[id]);
+                            feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
+                            feature.set('color', layerProperties['odwierty'].color);
+                            feature.setId(id);
+                            featuresArray.push(feature);
+                        }
+                        layer.getSource().getSource().clear();
+                        layer.getSource().getSource().addFeatures(featuresArray);
+                    }
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+        $('#searchModal').modal('hide');
     }
 
-    let searchSubmit = document.getElementById('searchSubmit')
-    searchSubmit.addEventListener("click", search);
+    let searchSubmitButton = document.getElementById('searchSubmit')
+    searchSubmitButton.addEventListener("click", search);
+    let removeFilterButton = document.getElementById('removeFilter')
+    removeFilterButton.addEventListener("click", removeFilter);
 
     function changeVisibility() {
         var layerName = this.value;

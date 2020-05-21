@@ -23,15 +23,15 @@ namespace GreenMap.Models
 
         [Display(Name = "Współrzędna X")]
         [Range(233811, 251375, ErrorMessage = "Współrzędna X musi mieścić się w granicach miasta (przedział 233811-251375)")]
-        public decimal? EurefX1 { get; set; }
+        public double? EurefX1 { get; set; }
         [Range(233811, 251375, ErrorMessage = "Współrzędna X musi mieścić się w granicach miasta (przedział 233811-251375)")]
-        public decimal? EurefX2 { get; set; }
+        public double? EurefX2 { get; set; }
 
         [Display(Name = "Współrzędna Y")]
         [Range(556746, 587120, ErrorMessage = "Współrzędna Y musi mieścić się w granicach miasta (przedział 556746-587120)")]
-        public decimal? EurefY1 { get; set; }
+        public double? EurefY1 { get; set; }
         [Range(556746, 587120, ErrorMessage = "Współrzędna Y musi mieścić się w granicach miasta (przedział 556746-587120)")]
-        public decimal? EurefY2 { get; set; }
+        public double? EurefY2 { get; set; }
 
         [Display(Name = "Głębokość do zwierciadła [m]")]
         [Range(-1000, 0, ErrorMessage = "Głębokość musi mieścić się w zakresie od -1000 do 0")]

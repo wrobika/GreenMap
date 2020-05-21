@@ -78,20 +78,22 @@ namespace GreenMap.Controllers
         //public async Task<ActionResult<Dictionary<long, string>>> Search([FromForm] OdwiertSearch preferences)
         {
             IQueryable<Odwiert> filteredSet = _context.Odwiert;
-            if (preferences.NazwaObiektu != null && !preferences.NazwaObiektu.Equals(""))
-                SearchByName(preferences.NazwaObiektu);
-            if (preferences.EurefX1.HasValue || preferences.EurefX2.HasValue)
-                SearchByX(preferences.EurefX1, preferences.EurefX2);
-            if (preferences.EurefY1.HasValue || preferences.EurefY2.HasValue)
-                SearchByY(preferences.EurefY1, preferences.EurefY2);
-            if (preferences.Filtracja1.HasValue || preferences.Filtracja2.HasValue)
-                SearchByFilter(preferences.Filtracja1, preferences.Filtracja2);
-            if (preferences.GlebokoscZwierciadla1.HasValue || preferences.GlebokoscZwierciadla2.HasValue)
-                SearchByDepth(preferences.GlebokoscZwierciadla1, preferences.GlebokoscZwierciadla2);
+            if (preferences.Status != null && !preferences.Status.Equals(""))
+                filteredSet = SearchByStatus(filteredSet, preferences.Status);
             if (preferences.Lokalizacja != null && !preferences.Lokalizacja.Equals(""))
                 filteredSet = SearchByDistrict(filteredSet, preferences.Lokalizacja);
-            if (preferences.Status != null && !preferences.Status.Equals(""))
-                SearchByStatus(preferences.Status);
+            if (preferences.EurefX1.HasValue || preferences.EurefX2.HasValue)
+                filteredSet = SearchByX(filteredSet, preferences.EurefX1, preferences.EurefX2);
+            if (preferences.EurefY1.HasValue || preferences.EurefY2.HasValue)
+                filteredSet = SearchByY(filteredSet, preferences.EurefY1, preferences.EurefY2);
+            if (preferences.Filtracja1.HasValue || preferences.Filtracja2.HasValue)
+                filteredSet = SearchByFiltering(filteredSet, preferences.Filtracja1, preferences.Filtracja2);
+            if (preferences.GlebokoscZwierciadla1.HasValue || preferences.GlebokoscZwierciadla2.HasValue)
+                filteredSet = SearchByDepth(filteredSet, preferences.GlebokoscZwierciadla1, preferences.GlebokoscZwierciadla2);
+            if (preferences.NrRbdh.HasValue)
+                filteredSet = SearchByRbdh(filteredSet, preferences.NrRbdh);
+            if (preferences.NazwaObiektu != null && !preferences.NazwaObiektu.Equals(""))
+                filteredSet = SearchByName(filteredSet, preferences.NazwaObiektu);
             return await GetWktWithId(filteredSet);
         }
 
@@ -105,9 +107,10 @@ namespace GreenMap.Controllers
             return wkt;
         }
 
-        private void SearchByStatus(string status)
+        private IQueryable<Odwiert> SearchByStatus(IQueryable<Odwiert> filteredSet, string status)
         {
-            throw new NotImplementedException();
+            return filteredSet
+                .Where(item => item.Status.Equals(status));
         }
 
         private IQueryable<Odwiert> SearchByDistrict(IQueryable<Odwiert> filteredSet, string lokalizacja)
@@ -116,29 +119,52 @@ namespace GreenMap.Controllers
                 .Where(item => item.DzielnicaId.ToString().Equals(lokalizacja));
         }
 
-        private void SearchByDepth(decimal? glebokoscZwierciadla1, decimal? glebokoscZwierciadla2)
+        private IQueryable<Odwiert> SearchByDepth(IQueryable<Odwiert> filteredSet, decimal? glebokoscZwierciadla1, decimal? glebokoscZwierciadla2)
+        {
+            if (glebokoscZwierciadla1 > glebokoscZwierciadla2)
+            {
+                decimal? temp = glebokoscZwierciadla1;
+                glebokoscZwierciadla1 = glebokoscZwierciadla2;
+                glebokoscZwierciadla2 = temp;
+            }
+            List<int?> nrRbdhList = _context.ZwierciadloGl
+                .Where(item => item.GlUstabilizowana > glebokoscZwierciadla1)
+                .Where(item => item.GlUstabilizowana < glebokoscZwierciadla2)
+                .Select(item => item.NrRbdh)
+                .ToList();
+            return filteredSet
+                .Where(item => nrRbdhList.Contains(item.NrRbdh));
+        }
+
+        private IQueryable<Odwiert> SearchByFiltering(IQueryable<Odwiert> filteredSet, decimal? filtracja1, decimal? filtracja2)
         {
             throw new NotImplementedException();
         }
 
-        private void SearchByFilter(decimal? filtracja1, decimal? filtracja2)
+        private IQueryable<Odwiert> SearchByY(IQueryable<Odwiert> filteredSet, double? eurefY1, double? eurefY2)
         {
-            throw new NotImplementedException();
+            return filteredSet
+                .Where(item => item.EurefY > eurefY1)
+                .Where(item => item.EurefY < eurefY2);
         }
 
-        private void SearchByY(decimal? eurefY1, decimal? eurefY2)
+        private IQueryable<Odwiert> SearchByX(IQueryable<Odwiert> filteredSet, double? eurefX1, double? eurefX2)
         {
-            throw new NotImplementedException();
+            return filteredSet
+                .Where(item => item.EurefX > eurefX1)
+                .Where(item => item.EurefX < eurefX2);
         }
 
-        private void SearchByX(decimal? eurefX1, decimal? eurefX2)
+        private IQueryable<Odwiert> SearchByRbdh(IQueryable<Odwiert> filteredSet, int? nrRbdh)
         {
-            throw new NotImplementedException();
+            return filteredSet
+                .Where(item => item.NrRbdh.Equals(nrRbdh));
         }
 
-        private void SearchByName(string nazwaObiektu)
+        private IQueryable<Odwiert> SearchByName(IQueryable<Odwiert> filteredSet, string nazwaObiektu)
         {
-            throw new NotImplementedException();
+            return filteredSet
+                .Where(item => item.NazwaObiektu.Equals(nazwaObiektu));
         }
     }
 }
