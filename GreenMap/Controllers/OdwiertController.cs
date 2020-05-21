@@ -31,12 +31,7 @@ namespace GreenMap.Controllers
         [HttpGet]
         public async Task<Dictionary<long, string>> GetOdwiert()
         {
-            var wkt = await _context.Odwiert
-                .Where(item => item.EurefX != null)
-                .Where(item => item.EurefY != null)
-                .ToDictionaryAsync(item => item.Objectid,
-                    item => new Point(item.EurefY.Value, item.EurefX.Value).ToString());
-            return wkt;
+            return await GetWktWithId(_context.Odwiert);
         }
 
         // GET: api/Odwiert/5
@@ -66,11 +61,83 @@ namespace GreenMap.Controllers
 
         public async Task<SelectList> GetStatusSelectList()
         {
-            var status = await _context.Odwiert
+            var possibleStatus = await _context.Odwiert
                 .Select(item => item.Status)
                 .Distinct()
+                .Select(status => new SelectListItem { Text = status, Value = status })
                 .ToListAsync();
-            return new SelectList(status);
+            List<SelectListItem> statusList = new List<SelectListItem>();
+            statusList.Add(new SelectListItem { Selected=true, Text = "", Value = "" });
+            statusList.AddRange(possibleStatus);
+            return new SelectList(statusList, "Value", "Text");
+        }
+
+        [HttpPost]
+        public async Task<Dictionary<long, string>> Search([FromForm]OdwiertSearch preferences)
+        {
+            IQueryable<Odwiert> filteredSet = _context.Odwiert;
+            if (preferences.NazwaObiektu != null)
+                SearchByName(preferences.NazwaObiektu);
+            if (preferences.EurefX1.HasValue || preferences.EurefX2.HasValue)
+                SearchByX(preferences.EurefX1, preferences.EurefX2);
+            if (preferences.EurefY1.HasValue || preferences.EurefY2.HasValue)
+                SearchByY(preferences.EurefY1, preferences.EurefY2);
+            if (preferences.Filtracja1.HasValue || preferences.Filtracja2.HasValue)
+                SearchByFilter(preferences.Filtracja1, preferences.Filtracja2);
+            if (preferences.GlebokoscZwierciadla1.HasValue || preferences.GlebokoscZwierciadla2.HasValue)
+                SearchByDepth(preferences.GlebokoscZwierciadla1, preferences.GlebokoscZwierciadla2);
+            if (preferences.Status != null && !preferences.Lokalizacja.Equals(""))
+                filteredSet = SearchByDistrict(filteredSet, preferences.Lokalizacja);
+            if (preferences.Status != null && !preferences.Status.Equals(""))
+                SearchByStatus(preferences.Status);
+
+            return await GetWktWithId(filteredSet);
+        }
+
+        private async Task<Dictionary<long, string>> GetWktWithId(IQueryable<Odwiert> drillings)
+        {
+            var wkt = await drillings
+                .Where(item => item.EurefX != null)
+                .Where(item => item.EurefY != null)
+                .ToDictionaryAsync(item => item.Objectid,
+                    item => new Point(item.EurefY.Value, item.EurefX.Value).ToString());
+            return wkt;
+        }
+
+        private void SearchByStatus(string status)
+        {
+            throw new NotImplementedException();
+        }
+
+        private IQueryable<Odwiert> SearchByDistrict(IQueryable<Odwiert> filteredSet, string lokalizacja)
+        {
+            return filteredSet
+                .Where(item => item.DzielnicaId.ToString().Equals(lokalizacja));
+        }
+
+        private void SearchByDepth(decimal? glebokoscZwierciadla1, decimal? glebokoscZwierciadla2)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void SearchByFilter(decimal? filtracja1, decimal? filtracja2)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void SearchByY(decimal? eurefY1, decimal? eurefY2)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void SearchByX(decimal? eurefX1, decimal? eurefX2)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void SearchByName(string nazwaObiektu)
+        {
+            throw new NotImplementedException();
         }
     }
 }

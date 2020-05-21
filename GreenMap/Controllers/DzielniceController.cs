@@ -58,11 +58,17 @@ namespace GreenMap.Controllers
 
         public async Task<SelectList> GetSelectList()
         {
-            var names = await _context.Dzielnice
-                .Select(item => item.Nazwa)
-                .Distinct()
+            var possibleDistricts = await _context.Dzielnice
+                .Select(item => new SelectListItem 
+                { 
+                    Text=item.Nazwa, 
+                    Value=item.IdDzielnicy.ToString()
+                })
                 .ToListAsync();
-            return new SelectList(names);
+            List<SelectListItem> districtList = new List<SelectListItem>();
+            districtList.Add(new SelectListItem { Selected=true, Text = "", Value = "" });
+            districtList.AddRange(possibleDistricts);
+            return new SelectList(districtList, "Value", "Text");
         }
     }
 }
