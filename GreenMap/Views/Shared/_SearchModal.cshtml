@@ -18,88 +18,74 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="NazwaObiektu" class="control-label"></label>
-                        <input asp-for="NazwaObiektu" class="form-control" />
+                        <input asp-for="NazwaObiektu" class="form-control" id="NazwaObiektu"/>
                         <span asp-validation-for="NazwaObiektu" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Lokalizacja" class="control-label"></label>                    
+                        <label asp-for="Lokalizacja" class="control-label"></label>
                         <select asp-for="Lokalizacja"
                                 class="form-control"
-                                asp-items="@districtList">
+                                asp-items="@districtList"
+                                id="Lokalizacja">
                         </select>
                     </div>
                     <div class="form-group">
                         <label asp-for="Status" class="control-label"></label>
                         <select asp-for="Status"
                                 class="form-control"
-                                asp-items="@statusList">
+                                asp-items="@statusList"
+                                id="Status">
                         </select>
                     </div>
                     <div class="form-group">
                         <label asp-for="EurefX1" class="control-label"></label>
-                        <input asp-for="EurefX1" class="form-control" placeholder="określ początek przedziału"/>
+                        <input asp-for="EurefX1" id="EurefX1" class="form-control" placeholder="określ początek przedziału" />
                         <span asp-validation-for="EurefX1" class="text-danger"></span>
-                        <input asp-for="EurefX2" class="form-control" placeholder="określ koniec przedziału"/>
+                        <input asp-for="EurefX2" id="EurefX2" class="form-control" placeholder="określ koniec przedziału" />
                         <span asp-validation-for="EurefX2" class="text-danger"></span>
                     </div>
-                    @*<div class="form-group">
-                        <label asp-for="EurefX2" class="control-label"></label>
-
-
-                    </div>*@
                     <div class="form-group">
                         <label asp-for="EurefY1" class="control-label"></label>
-                        <input asp-for="EurefY1" class="form-control" placeholder="określ początek przedziału"/>
+                        <input asp-for="EurefY1" id="EurefY1" class="form-control" placeholder="określ początek przedziału" />
                         <span asp-validation-for="EurefY1" class="text-danger"></span>
-                        <input asp-for="EurefY2" class="form-control" placeholder="określ koniec przedziału"/>
+                        <input asp-for="EurefY2" id="EurefY2" class="form-control" placeholder="określ koniec przedziału" />
                         <span asp-validation-for="EurefY2" class="text-danger"></span>
                     </div>
-                    @*<div class="form-group">
-                        <label asp-for="EurefY2" class="control-label"></label>
-
-                    </div>*@
                     <div class="form-group">
                         <label asp-for="GlebokoscZwierciadla1" class="control-label"></label>
-                        <input asp-for="GlebokoscZwierciadla1" class="form-control" placeholder="określ początek zakresu" />
+                        <input asp-for="GlebokoscZwierciadla1" id="GlebokoscZwierciadla1" class="form-control" placeholder="określ początek zakresu" />
                         <span asp-validation-for="GlebokoscZwierciadla1" class="text-danger"></span>
-                        <input asp-for="GlebokoscZwierciadla2" class="form-control" placeholder="określ koniec zakresu" />
+                        <input asp-for="GlebokoscZwierciadla2" id="GlebokoscZwierciadla2" class="form-control" placeholder="określ koniec zakresu" />
                         <span asp-validation-for="GlebokoscZwierciadla2" class="text-danger"></span>
                     </div>
-                    @*<div class="form-group">
-                        <label asp-for="GlebokoscZwierciadla2" class="control-label"></label>
-
-                    </div>*@
                     <div class="form-group">
                         <label asp-for="Filtracja1" class="control-label"></label>
-                        <input asp-for="Filtracja1" class="form-control" placeholder="określ początek zakresu" />
+                        <input asp-for="Filtracja1" id="Filtracja1" class="form-control" placeholder="określ początek zakresu" />
                         <span asp-validation-for="Filtracja1" class="text-danger"></span>
-                        <input asp-for="Filtracja2" class="form-control" placeholder="określ koniec zakresu" />
+                        <input asp-for="Filtracja2" id="Filtracja2" class="form-control" placeholder="określ koniec zakresu" />
                         <span asp-validation-for="Filtracja2" class="text-danger"></span>
                     </div>
-                    @*<div class="form-group">
-                        <label asp-for="Filtracja2" class="control-label"></label>
-
-                    </div>*@
                     <div class="form-group">
                         <label asp-for="HydroGleby" class="control-label"></label>
-                        <input asp-for="HydroGleby" class="form-control" />
+                        <input asp-for="HydroGleby" id="HydroGleby" class="form-control" />
                         <span asp-validation-for="HydroGleby" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="ZanieczyszczenieGleby" class="control-label"></label>
-                        <input asp-for="ZanieczyszczenieGleby" class="form-control" />
+                        <input asp-for="ZanieczyszczenieGleby" id="ZanieczyszczenieGleby" class="form-control" />
                         <span asp-validation-for="ZanieczyszczenieGleby" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="JakoscWody" class="control-label"></label>
-                        <input asp-for="JakoscWody" class="form-control" />
+                        <input asp-for="JakoscWody" id="JakoscWody" class="form-control" />
                         <span asp-validation-for="JakoscWody" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Nawodnienie" class="control-label"></label>
-                        <input asp-for="Nawodnienie" class="form-control" />
+                        <input asp-for="Nawodnienie" id="Nawodnienie" class="form-control" />
                         <span asp-validation-for="Nawodnienie" class="text-danger"></span>
                     </div>
+                    <button id="searchSubmit" type="button" class="btn btn-success btn-block">Wyszukaj</button>
                     <div class="form-group">
                         <input type="submit" value="Szukaj" class="btn btn-success btn-block" />
                     </div>

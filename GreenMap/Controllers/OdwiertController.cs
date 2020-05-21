@@ -16,6 +16,7 @@ namespace GreenMap.Controllers
     [ApiController]
     public class OdwiertController : ControllerBase
     {
+        public IQueryable<Odwiert> FilteredDrilling { get; set; }
         private readonly epionierContext _context;
         private readonly  DzielniceController _dzielniceController;
         private readonly ZwierciadloGlController _zwierciadloController;
@@ -73,10 +74,11 @@ namespace GreenMap.Controllers
         }
 
         [HttpPost]
-        public async Task<Dictionary<long, string>> Search([FromForm]OdwiertSearch preferences)
+        public async Task<ActionResult<Dictionary<long,string>>> Search([Bind("NazwaObiektu,NrRbdh,Lokalizacja,Status,EurefX1,EurefX2,EurefY1,EurefY2,GlebokoscZwierciadla1,GlebokoscZwierciadla2,Filtracja1,Filtracja2,HydroGleby,ZanieczyszczenieGleby, JakoscWody,Nawodnienie")] OdwiertSearch preferences)
+        //public async Task<ActionResult<Dictionary<long, string>>> Search([FromForm] OdwiertSearch preferences)
         {
             IQueryable<Odwiert> filteredSet = _context.Odwiert;
-            if (preferences.NazwaObiektu != null)
+            if (preferences.NazwaObiektu != null && !preferences.NazwaObiektu.Equals(""))
                 SearchByName(preferences.NazwaObiektu);
             if (preferences.EurefX1.HasValue || preferences.EurefX2.HasValue)
                 SearchByX(preferences.EurefX1, preferences.EurefX2);
@@ -86,11 +88,10 @@ namespace GreenMap.Controllers
                 SearchByFilter(preferences.Filtracja1, preferences.Filtracja2);
             if (preferences.GlebokoscZwierciadla1.HasValue || preferences.GlebokoscZwierciadla2.HasValue)
                 SearchByDepth(preferences.GlebokoscZwierciadla1, preferences.GlebokoscZwierciadla2);
-            if (preferences.Status != null && !preferences.Lokalizacja.Equals(""))
+            if (preferences.Lokalizacja != null && !preferences.Lokalizacja.Equals(""))
                 filteredSet = SearchByDistrict(filteredSet, preferences.Lokalizacja);
             if (preferences.Status != null && !preferences.Status.Equals(""))
                 SearchByStatus(preferences.Status);
-
             return await GetWktWithId(filteredSet);
         }
 

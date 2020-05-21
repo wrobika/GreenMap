@@ -62,7 +62,7 @@ namespace GreenMap.Controllers
                 .Select(item => new SelectListItem 
                 { 
                     Text=item.Nazwa, 
-                    Value=item.IdDzielnicy.ToString()
+                    Value=item.Objectid.ToString()
                 })
                 .ToListAsync();
             List<SelectListItem> districtList = new List<SelectListItem>();
