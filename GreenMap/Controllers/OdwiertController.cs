@@ -16,7 +16,6 @@ namespace GreenMap.Controllers
     [ApiController]
     public class OdwiertController : ControllerBase
     {
-        public IQueryable<Odwiert> FilteredDrilling { get; set; }
         private readonly epionierContext _context;
         private readonly  DzielniceController _dzielniceController;
         private readonly ZwierciadloGlController _zwierciadloController;
@@ -77,24 +76,24 @@ namespace GreenMap.Controllers
         public async Task<ActionResult<Dictionary<long,string>>> Search([Bind("NazwaObiektu,NrRbdh,Lokalizacja,Status,EurefX1,EurefX2,EurefY1,EurefY2,GlebokoscZwierciadla1,GlebokoscZwierciadla2,Filtracja1,Filtracja2,HydroGleby,ZanieczyszczenieGleby, JakoscWody,Nawodnienie")] OdwiertSearch preferences)
         //public async Task<ActionResult<Dictionary<long, string>>> Search([FromForm] OdwiertSearch preferences)
         {
-            IQueryable<Odwiert> filteredSet = _context.Odwiert;
+            IQueryable<Odwiert> searchedSet = _context.Odwiert;
             if (preferences.Status != null && !preferences.Status.Equals(""))
-                filteredSet = SearchByStatus(filteredSet, preferences.Status);
+                searchedSet = SearchByStatus(searchedSet, preferences.Status);
             if (preferences.Lokalizacja != null && !preferences.Lokalizacja.Equals(""))
-                filteredSet = SearchByDistrict(filteredSet, preferences.Lokalizacja);
+                searchedSet = SearchByDistrict(searchedSet, preferences.Lokalizacja);
             if (preferences.EurefX1.HasValue || preferences.EurefX2.HasValue)
-                filteredSet = SearchByX(filteredSet, preferences.EurefX1, preferences.EurefX2);
+                searchedSet = SearchByX(searchedSet, preferences.EurefX1, preferences.EurefX2);
             if (preferences.EurefY1.HasValue || preferences.EurefY2.HasValue)
-                filteredSet = SearchByY(filteredSet, preferences.EurefY1, preferences.EurefY2);
+                searchedSet = SearchByY(searchedSet, preferences.EurefY1, preferences.EurefY2);
             if (preferences.Filtracja1.HasValue || preferences.Filtracja2.HasValue)
-                filteredSet = SearchByFiltering(filteredSet, preferences.Filtracja1, preferences.Filtracja2);
+                searchedSet = SearchByFiltering(searchedSet, preferences.Filtracja1, preferences.Filtracja2);
             if (preferences.GlebokoscZwierciadla1.HasValue || preferences.GlebokoscZwierciadla2.HasValue)
-                filteredSet = SearchByDepth(filteredSet, preferences.GlebokoscZwierciadla1, preferences.GlebokoscZwierciadla2);
+                searchedSet = SearchByDepth(searchedSet, preferences.GlebokoscZwierciadla1, preferences.GlebokoscZwierciadla2);
             if (preferences.NrRbdh.HasValue)
-                filteredSet = SearchByRbdh(filteredSet, preferences.NrRbdh);
+                searchedSet = SearchByRbdh(searchedSet, preferences.NrRbdh);
             if (preferences.NazwaObiektu != null && !preferences.NazwaObiektu.Equals(""))
-                filteredSet = SearchByName(filteredSet, preferences.NazwaObiektu);
-            return await GetWktWithId(filteredSet);
+                searchedSet = SearchByName(searchedSet, preferences.NazwaObiektu);
+            return await GetWktWithId(searchedSet);
         }
 
         private async Task<Dictionary<long, string>> GetWktWithId(IQueryable<Odwiert> drillings)
@@ -107,19 +106,19 @@ namespace GreenMap.Controllers
             return wkt;
         }
 
-        private IQueryable<Odwiert> SearchByStatus(IQueryable<Odwiert> filteredSet, string status)
+        private IQueryable<Odwiert> SearchByStatus(IQueryable<Odwiert> searchedSet, string status)
         {
-            return filteredSet
+            return searchedSet
                 .Where(item => item.Status.Equals(status));
         }
 
-        private IQueryable<Odwiert> SearchByDistrict(IQueryable<Odwiert> filteredSet, string lokalizacja)
+        private IQueryable<Odwiert> SearchByDistrict(IQueryable<Odwiert> searchedSet, string lokalizacja)
         {
-            return filteredSet
+            return searchedSet
                 .Where(item => item.DzielnicaId.ToString().Equals(lokalizacja));
         }
 
-        private IQueryable<Odwiert> SearchByDepth(IQueryable<Odwiert> filteredSet, decimal? glebokoscZwierciadla1, decimal? glebokoscZwierciadla2)
+        private IQueryable<Odwiert> SearchByDepth(IQueryable<Odwiert> searchedSet, decimal? glebokoscZwierciadla1, decimal? glebokoscZwierciadla2)
         {
             if (glebokoscZwierciadla1 > glebokoscZwierciadla2)
             {
@@ -132,38 +131,38 @@ namespace GreenMap.Controllers
                 .Where(item => item.GlUstabilizowana < glebokoscZwierciadla2)
                 .Select(item => item.NrRbdh)
                 .ToList();
-            return filteredSet
+            return searchedSet
                 .Where(item => nrRbdhList.Contains(item.NrRbdh));
         }
 
-        private IQueryable<Odwiert> SearchByFiltering(IQueryable<Odwiert> filteredSet, decimal? filtracja1, decimal? filtracja2)
+        private IQueryable<Odwiert> SearchByFiltering(IQueryable<Odwiert> searchedSet, decimal? filtracja1, decimal? filtracja2)
         {
             throw new NotImplementedException();
         }
 
-        private IQueryable<Odwiert> SearchByY(IQueryable<Odwiert> filteredSet, double? eurefY1, double? eurefY2)
+        private IQueryable<Odwiert> SearchByY(IQueryable<Odwiert> searchedSet, double? eurefY1, double? eurefY2)
         {
-            return filteredSet
+            return searchedSet
                 .Where(item => item.EurefY > eurefY1)
                 .Where(item => item.EurefY < eurefY2);
         }
 
-        private IQueryable<Odwiert> SearchByX(IQueryable<Odwiert> filteredSet, double? eurefX1, double? eurefX2)
+        private IQueryable<Odwiert> SearchByX(IQueryable<Odwiert> searchedSet, double? eurefX1, double? eurefX2)
         {
-            return filteredSet
+            return searchedSet
                 .Where(item => item.EurefX > eurefX1)
                 .Where(item => item.EurefX < eurefX2);
         }
 
-        private IQueryable<Odwiert> SearchByRbdh(IQueryable<Odwiert> filteredSet, int? nrRbdh)
+        private IQueryable<Odwiert> SearchByRbdh(IQueryable<Odwiert> searchedSet, int? nrRbdh)
         {
-            return filteredSet
+            return searchedSet
                 .Where(item => item.NrRbdh.Equals(nrRbdh));
         }
 
-        private IQueryable<Odwiert> SearchByName(IQueryable<Odwiert> filteredSet, string nazwaObiektu)
+        private IQueryable<Odwiert> SearchByName(IQueryable<Odwiert> searchedSet, string nazwaObiektu)
         {
-            return filteredSet
+            return searchedSet
                 .Where(item => item.NazwaObiektu.Equals(nazwaObiektu));
         }
     }

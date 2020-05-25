@@ -20,18 +20,10 @@
     var city = await miastoController.GetGraniceMiasta();
     var drilling = await odwiertController.GetOdwiert();
     var mirror = await zwierciadloController.GetZwierciadloGlebokosc();
-    //var mirrorI = await zwierciadloController.GetZwierciadloGl(0, -0.5M);
-    //var mirrorII = await zwierciadloController.GetZwierciadloGl(-0.5M, -1M);
-    //var mirrorIII = await zwierciadloController.GetZwierciadloGl(-1M, -2M);
-    //var mirrorIV = await zwierciadloController.GetZwierciadloGl(-2M, -5M);
-    //var mirrorV = await zwierciadloController.GetZwierciadloGl(-5M, -10M);
-    //var mirrorVI = await zwierciadloController.GetZwierciadloGl(-10M, -15M);
-    //var mirrorVII = await zwierciadloController.GetZwierciadloGl(-15, -20M);
-    //var mirrorVIII = await zwierciadloController.GetZwierciadloGl(-20M, -30M);
-    //var mirrorIX = await zwierciadloController.GetZwierciadloGl(-30M, -10000M);
     var layersProperties = LayersProperties.Layers;
 }
-
+<script src="~/lib/createLayers.js"></script>
+<script src="~/lib/searchFunctions.js"></script>
 <script type="text/javascript">
 
     var container = document.getElementById('popup');
@@ -52,114 +44,6 @@
         return false;
     };
 
-    function rgba(layerName) {
-        var layer = layerProperties[layerName];
-        var color = layer.color;
-        var alpha = layer.opacity;
-        const [r,g,b] = Array.from(ol.color.asArray(color));
-        return ol.color.asString([r,g,b,alpha]);
-    }
-
-    proj4.defs('EPSG:2180', '+proj=tmerc + lat_0=0 + lon_0=19 + k=0.9993 + x_0=500000 + y_0=-5300000 + ellps=GRS80 + towgs84=0, 0, 0, 0, 0, 0, 0 + units=m + no_defs');
-    ol.proj.proj4.register(proj4);
-    var wktReader = new ol.format.WKT();
-
-    function getLayerSource(layerName) {
-        var objects = layerObjects[layerName];
-        var featuresArray = [];
-        if (Array.isArray(objects)) {
-            for (var wkt of objects) {
-                var feature = wktReader.readFeature(wkt);
-                feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
-                feature.set('color', layerProperties[layerName].color);
-                featuresArray.push(feature);
-            }
-        }
-        else {
-            if (layerName === 'zwierciadło') {
-                for (var wkt of Object.keys(objects)) {
-                    var feature = wktReader.readFeature(wkt);
-                    feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
-                    feature.set('color', objects[wkt]);
-                    featuresArray.push(feature);
-                }
-            }
-            if (layerName === 'odwierty') {
-                for (var id of Object.keys(objects)) {
-                    var feature = wktReader.readFeature(objects[id]);
-                    feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
-                    feature.set('color', layerProperties[layerName].color);
-                    feature.setId(id);
-                    featuresArray.push(feature);
-                }
-            }
-        }
-        return new ol.source.Vector({
-            features: featuresArray
-        });
-    }
-
-    function getLayer(layerName) {
-        if (layerProperties[layerName].cluster === true) {
-                return getClusterLayer(layerName);
-        }
-        var layerStroke = layerProperties[layerName].stroke === null ? null : new ol.style.Stroke({
-            color: layerProperties[layerName].stroke,
-            width: 2
-        });
-        return new ol.layer.Vector({
-            name: layerName,
-            source: getLayerSource(layerName),
-            style: new ol.style.Style({
-                stroke: layerStroke,
-                fill: new ol.style.Fill({
-                    color: rgba(layerName)
-                })
-            })
-        });
-    }
-
-    function getClusterLayer(layerName) {
-        var objectCluster = new ol.source.Cluster({
-            distance: 50,
-            source: getLayerSource(layerName)
-        });
-        return new ol.layer.Vector({
-            name: layerName,
-            source: objectCluster,
-            style: function (feature) {
-                var size = feature.get('features').length;
-                if (size === 1) {
-                    style = new ol.style.Style({
-                        image: new ol.style.Circle({
-                            radius: layerProperties[layerName].radius,
-                            fill: new ol.style.Fill({
-                                color: feature.get('features')[0].get('color')
-                            })
-                        })
-                    })
-                }
-                else {
-                    style = new ol.style.Style({
-                        image: new ol.style.Circle({
-                            radius: layerProperties[layerName].radius,
-                            fill: new ol.style.Fill({
-                                color: rgba(layerName)
-                            })
-                        }),
-                        text: new ol.style.Text({
-                            text: size.toString(),
-                            fill: new ol.style.Fill({
-                                color: layerProperties[layerName].text
-                            })
-                        })
-                    });
-                }
-                return style;
-            }
-        });
-    }
-
     var layerProperties = @Html.Raw(Json.Serialize(layersProperties));
 
     var layerObjects = {
@@ -168,15 +52,6 @@
         'zieleń':@Html.Raw(Json.Serialize(greenery)),
         'cieki/zbiorniki': @Html.Raw(Json.Serialize(hydro)),
         'zwierciadło': @Html.Raw(Json.Serialize(mirror)),
-        @*'zwierciadłoI':  @Html.Raw(Json.Serialize(mirrorI)),
-        'zwierciadłoII':  @Html.Raw(Json.Serialize(mirrorII)),
-        'zwierciadłoIII':  @Html.Raw(Json.Serialize(mirrorIII)),
-        'zwierciadłoIV':  @Html.Raw(Json.Serialize(mirrorIV)),
-        'zwierciadłoV':  @Html.Raw(Json.Serialize(mirrorV)),
-        'zwierciadłoVI':  @Html.Raw(Json.Serialize(mirrorVI)),
-        'zwierciadłoVII':  @Html.Raw(Json.Serialize(mirrorVII)),
-        'zwierciadłoVIII':  @Html.Raw(Json.Serialize(mirrorVIII)),
-        'zwierciadłoIX':  @Html.Raw(Json.Serialize(mirrorIX)),*@
         'obiekty': @Html.Raw(Json.Serialize(objects)),
         'odwierty': @Html.Raw(Json.Serialize(drilling)),
     };
@@ -207,92 +82,6 @@
         })
     });
 
-    function search() {
-        var searchModel = {};
-        searchModel.NazwaObiektu = $('#NazwaObiektu').val();
-        searchModel.NrRbdh = $('#NrRbdh').val();
-        searchModel.Lokalizacja = $('#Lokalizacja').val();
-        searchModel.Status = $('#Status').val();
-        searchModel.EurefX1 = $('#EurefX1').val();
-        searchModel.EurefX2 = $('#EurefX2').val();
-        searchModel.EurefY1 = $('#EurefY1').val();
-        searchModel.EurefY2 = $('#EurefY2').val();
-        searchModel.GlebokoscZwierciadla1 = $('#GlebokoscZwierciadla1').val();
-        searchModel.GlebokoscZwierciadla2 = $('#GlebokoscZwierciadla2').val();
-        searchModel.Filtracja1 = $('#Filtracja1').val();
-        searchModel.Filtracja2 = $('#Filtracja2').val();
-        searchModel.HydroGleby = $('#HydroGleby').val();
-        searchModel.ZanieczyszczenieGleby = $('#ZanieczyszczenieGleby').val();
-        searchModel.JakoscWody = $('#JakoscWody').val();
-        searchModel.Nawodnienie = $('#Nawodnienie').val();
-        var postObject = JSON.stringify(searchModel);
-
-        $.ajax({
-            type: 'POST',
-            contentType: "application/json; charset=utf-8",
-            url: 'api/Odwiert',
-            data: postObject,
-            cache: false,
-            success: function (data) {
-                map.getLayers().forEach(function (layer) {
-                    if (layer.get('name') === 'odwierty') {
-                        var featuresArray = [];
-                        for (var id of Object.keys(data)) {
-                            var feature = wktReader.readFeature(data[id]);
-                            feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
-                            feature.set('color', layerProperties['odwierty'].color);
-                            feature.setId(id);
-                            featuresArray.push(feature);
-                        }
-                        layer.getSource().getSource().clear();
-                        layer.getSource().getSource().addFeatures(featuresArray);
-                    }
-                });
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            }
-        });
-        $('#searchModal').modal('hide');
-    }
-    function removeFilter() {
-        $.ajax({
-            type: 'GET',
-            contentType: "application/json; charset=utf-8",
-            url: 'api/Odwiert',
-            cache: false,
-            success: function (data) {
-                map.getLayers().forEach(function (layer) {
-                    if (layer.get('name') === 'odwierty') {
-                        var featuresArray = [];
-                        for (var id of Object.keys(data)) {
-                            var feature = wktReader.readFeature(data[id]);
-                            feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
-                            feature.set('color', layerProperties['odwierty'].color);
-                            feature.setId(id);
-                            featuresArray.push(feature);
-                        }
-                        layer.getSource().getSource().clear();
-                        layer.getSource().getSource().addFeatures(featuresArray);
-                    }
-                });
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            }
-        });
-        $('#searchModal').modal('hide');
-    }
-
-    let searchSubmitButton = document.getElementById('searchSubmit')
-    searchSubmitButton.addEventListener("click", search);
-    let removeFilterButton = document.getElementById('removeFilter')
-    removeFilterButton.addEventListener("click", removeFilter);
-
     function changeVisibility() {
         var layerName = this.value;
         var button = this;
@@ -320,70 +109,5 @@
     buttons.forEach((btn) => {
         btn.addEventListener("click", changeVisibility);
     });
-
-    var drillingLayer;
-    for (var layer of layers) {
-        if (layer.get('name') === 'odwierty')
-            drillingLayer = layer;
-    }
-    var interaction = new ol.interaction.Select({
-        condition: ol.events.condition.click,
-        layers: [drillingLayer]
-        //condition: ol.events.condition.pointerMove,
-    });
-    map.addInteraction(interaction);
-    interaction.on('select', function (e) {
-        var selectFeatures = interaction.getFeatures().getArray();
-        //document.getElementById('status').innerHTML = '&nbsp;' +
-        //    e.target.getFeatures().getLength() +
-        //    ' selected features (last operation selected ' + e.selected.length +
-        //    ' and deselected ' + e.deselected.length + ' features)';
-        //if (selectFeatures.length !== 0) {
-        //    var coordinate = selectFeatures[0].getGeometry().getCoordinates();
-        //var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
-        //content.innerHTML = '<p>You clicked here:</p><code>' + hdms +'</code>';
-        //overlay.setPosition(coordinate);
-        //} else {
-        //    overlay.setPosition(undefined);
-        //    closer.blur();
-        //    return false;
-        //}
-        if (selectFeatures[0].get('features').length === 1) {
-            $.ajax({
-                contentType: "application/json; charset=utf-8",
-                type: "GET",
-                url: "api/Odwiert/" + selectFeatures[0].get('features')[0].getId(),
-                success: function (point) {
-                    console.log(point);
-                    var coordinate = selectFeatures[0].getGeometry().getCoordinates();
-                    document.getElementById('info').click();
-                    document.getElementById('infoName').innerText = point.nazwaObiektu;
-                    document.getElementById('infoRbdh').innerText = point.nrRbdh;
-                    document.getElementById('infoStatus').innerText = point.status;
-                    document.getElementById('infoDistrict').innerText = point.lokalizacja;
-                    document.getElementById('infoCoord').innerText = point.wspolrzedne;
-                    document.getElementById('infoDepth').innerText = point.glebokoscZwierciadla;
-                    document.getElementById('infoFilter').innerText = point.filtracja;
-                    document.getElementById('infoHydro').innerText = point.hydroGleby;
-                    document.getElementById('infoImpurity').innerText = point.zanieczyszczenieGleby;
-                    document.getElementById('infoQuality').innerText = point.jakoscWody;
-                    document.getElementById('infIrrigation').innerText = point.nawodnienie;
-                    document.getElementById('infoProfile').innerText = point.profil;
-                    overlay.setPosition(coordinate);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('error while request');
-                }
-            });
-        }
-    });
-
-    //map.on('singleclick', function(evt) {
-    //    var coordinate = evt.coordinate;
-    //    var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
-
-    //    content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
-    //        '</code>';
-    //    overlay.setPosition(coordinate);
-    //});
 </script>
+<script src="~/lib/mapInteraction.js"></script>
