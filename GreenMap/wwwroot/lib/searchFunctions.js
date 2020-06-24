@@ -19,6 +19,25 @@
     return JSON.stringify(searchModel);
 }
 
+function emptySearchForm() {
+    $('#NazwaObiektu').val("");
+    $('#NrRbdh').val("");
+    $('#Lokalizacja').val("");
+    $('#Status').val("");
+    $('#EurefX1').val("");
+    $('#EurefX2').val("");
+    $('#EurefY1').val("");
+    $('#EurefY2').val("");
+    $('#GlebokoscZwierciadla1').val("");
+    $('#GlebokoscZwierciadla2').val("");
+    $('#Filtracja1').val("");
+    $('#Filtracja2').val("");
+    $('#HydroGleby').val("");
+    $('#ZanieczyszczenieGleby').val("");
+    $('#JakoscWody').val("");
+    $('#Nawodnienie').val("");
+}
+
 function search() {
     $.ajax({
         type: 'POST',
@@ -41,6 +60,7 @@ function searchRemove() {
         success: function (data) { loadFeatures(data) },
         error: function (jqXHR) { console.log(jqXHR) }
     });
+    emptySearchForm();
     $('#searchModal').modal('hide');
 }
 
