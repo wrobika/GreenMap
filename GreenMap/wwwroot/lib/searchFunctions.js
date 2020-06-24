@@ -23,7 +23,7 @@ function search() {
     $.ajax({
         type: 'POST',
         contentType: "application/json; charset=utf-8",
-        url: 'api/Odwiert',
+        url: 'api/Search',
         data: createSearchModel(),
         cache: false,
         success: function (data) { loadFeatures(data) },

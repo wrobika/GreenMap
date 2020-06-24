@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GreenMap;
+using NetTopologySuite.Geometries;
+using GreenMap.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GreenMap.Controllers
 {
@@ -14,110 +17,117 @@ namespace GreenMap.Controllers
     public class SearchController : ControllerBase
     {
         private readonly epionierContext _context;
+        private OdwiertSearch Preferences { get; set; }
+        private IQueryable<Odwiert> SearchedSet { get; set; }
+
 
         public SearchController(epionierContext context)
         {
             _context = context;
+            SearchedSet = _context.Odwiert;
         }
 
-        // GET: api/Search
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Odwiert>>> GetOdwiert()
-        {
-            return await _context.Odwiert.ToListAsync();
-        }
-
-        // GET: api/Search/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Odwiert>> GetOdwiert(long id)
-        {
-            var odwiert = await _context.Odwiert.FindAsync(id);
-
-            if (odwiert == null)
-            {
-                return NotFound();
-            }
-
-            return odwiert;
-        }
-
-        // PUT: api/Search/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOdwiert(long id, Odwiert odwiert)
-        {
-            if (id != odwiert.Objectid)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(odwiert).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OdwiertExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Search
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Odwiert>> PostOdwiert(Odwiert odwiert)
+        public async Task<ActionResult<Dictionary<long, string>>> SetPreferencesAndSearch(
+            [Bind("NazwaObiektu,NrRbdh,Lokalizacja,Status,EurefX1,EurefX2,EurefY1,EurefY2,GlebokoscZwierciadla1,GlebokoscZwierciadla2,Filtracja1,Filtracja2,HydroGleby,ZanieczyszczenieGleby, JakoscWody,Nawodnienie")] 
+            OdwiertSearch preferences)
         {
-            _context.Odwiert.Add(odwiert);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (OdwiertExists(odwiert.Objectid))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetOdwiert", new { id = odwiert.Objectid }, odwiert);
+            Preferences = preferences;
+            Search();
+            return await GetWktWithId();
         }
 
-        // DELETE: api/Search/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Odwiert>> DeleteOdwiert(long id)
+        private void Search()
         {
-            var odwiert = await _context.Odwiert.FindAsync(id);
-            if (odwiert == null)
-            {
-                return NotFound();
-            }
-
-            _context.Odwiert.Remove(odwiert);
-            await _context.SaveChangesAsync();
-
-            return odwiert;
+            SearchByStatus();
+            SearchByDistrict();
+            SearchByX();
+            SearchByY();
+            SearchByFiltering();
+            SearchByDepth();
+            SearchByRbdh();
+            SearchByName();
         }
 
-        private bool OdwiertExists(long id)
+        private async Task<Dictionary<long, string>> GetWktWithId()
         {
-            return _context.Odwiert.Any(e => e.Objectid == id);
+            return await SearchedSet
+                .Where(item => item.EurefX != null)
+                .Where(item => item.EurefY != null)
+                .ToDictionaryAsync(item => item.Objectid,
+                    item => new Point(item.EurefY.Value, item.EurefX.Value).ToString());
+        }
+
+        private void SearchByStatus()
+        {
+            if (Preferences.Status != null && !Preferences.Status.Equals(""))
+                SearchedSet = SearchedSet
+                    .Where(item => item.Status.Equals(Preferences.Status));
+        }
+
+        private void SearchByDistrict()
+        {
+            if (Preferences.Lokalizacja != null && !Preferences.Lokalizacja.Equals(""))
+                SearchedSet = SearchedSet
+                    .Where(item => item.DzielnicaId.ToString().Equals(Preferences.Lokalizacja));
+        }
+
+        private void SearchByDepth()
+        {
+            var glebokoscZwierciadla1 = Preferences.GlebokoscZwierciadla1;
+            var glebokoscZwierciadla2 = Preferences.GlebokoscZwierciadla2;
+            if (glebokoscZwierciadla1.HasValue || glebokoscZwierciadla2.HasValue)
+            {
+                if (glebokoscZwierciadla1 > glebokoscZwierciadla2)
+                {
+                    decimal? temp = glebokoscZwierciadla1;
+                    glebokoscZwierciadla1 = glebokoscZwierciadla2;
+                    glebokoscZwierciadla2 = temp;
+                }
+                List<int?> nrRbdhList = _context.ZwierciadloGl
+                    .Where(item => item.GlUstabilizowana > glebokoscZwierciadla1)
+                    .Where(item => item.GlUstabilizowana < glebokoscZwierciadla2)
+                    .Select(item => item.NrRbdh)
+                    .ToList();
+                SearchedSet = SearchedSet
+                    .Where(item => nrRbdhList.Contains(item.NrRbdh));
+            }
+        }
+
+        private void SearchByFiltering()
+        {
+            if (Preferences.Filtracja1.HasValue || Preferences.Filtracja2.HasValue)
+                throw new NotImplementedException();
+        }
+
+        private void SearchByY()
+        {
+            if (Preferences.EurefY1.HasValue || Preferences.EurefY2.HasValue)
+                SearchedSet = SearchedSet
+                    .Where(item => item.EurefY > Preferences.EurefY1)
+                    .Where(item => item.EurefY < Preferences.EurefY2);
+        }
+
+        private void SearchByX()
+        {
+            if (Preferences.EurefX1.HasValue || Preferences.EurefX2.HasValue)
+                SearchedSet = SearchedSet
+                    .Where(item => item.EurefX > Preferences.EurefX1)
+                    .Where(item => item.EurefX < Preferences.EurefX2);
+        }
+
+        private void SearchByRbdh()
+        {
+            if (Preferences.NrRbdh.HasValue)
+                SearchedSet = SearchedSet
+                .Where(item => item.NrRbdh.Equals(Preferences.NrRbdh));
+        }
+
+        private void SearchByName()
+        {
+            if (Preferences.NazwaObiektu != null && !Preferences.NazwaObiektu.Equals(""))
+                SearchedSet = SearchedSet
+                .Where(item => item.NazwaObiektu.Equals(Preferences.NazwaObiektu));
         }
     }
 }
