@@ -1,42 +1,53 @@
 ﻿var drillingLayer;
+var objectLayer;
 for (var layer of layers) {
     if (layer.get('name') === 'odwierty')
         drillingLayer = layer;
+    if (layer.get('name') === 'obiekty')
+        objectLayer = layer;
 }
-var interaction = new ol.interaction.Select({
+
+var drillingInteraction = new ol.interaction.Select({
     condition: ol.events.condition.click,
     layers: [drillingLayer]
-    //condition: ol.events.condition.pointerMove,
 });
-map.addInteraction(interaction);
-interaction.on('select', function (e) {
-    var selectFeatures = interaction.getFeatures().getArray();
-    //document.getElementById('status').innerHTML = '&nbsp;' +
-    //    e.target.getFeatures().getLength() +
-    //    ' selected features (last operation selected ' + e.selected.length +
-    //    ' and deselected ' + e.deselected.length + ' features)';
-    //if (selectFeatures.length !== 0) {
-    //    var coordinate = selectFeatures[0].getGeometry().getCoordinates();
-    //var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
-    //content.innerHTML = '<p>You clicked here:</p><code>' + hdms +'</code>';
-    //overlay.setPosition(coordinate);
-    //} else {
-    //    overlay.setPosition(undefined);
-    //    closer.blur();
-    //    return false;
-    //}
+
+var objectInteraction = new ol.interaction.Select({
+    condition: ol.events.condition.pointerMove,
+    layers: [objectLayer]
+});
+
+map.addInteraction(drillingInteraction);
+map.addInteraction(objectInteraction);
+
+drillingInteraction.on('select', function (e) {
+    var selectFeatures = drillingInteraction.getFeatures().getArray();
     if (selectFeatures[0].get('features').length === 1) {
         $.ajax({
             contentType: "application/json; charset=utf-8",
             type: "GET",
             url: "api/Odwiert/" + selectFeatures[0].get('features')[0].getId(),
-            success: function (point) {
-                fillInfoModal(point);
-                var coordinate = selectFeatures[0].getGeometry().getCoordinates();
-                overlay.setPosition(coordinate);
-            },
+            success: function (point) { fillInfoModal(point) },
             error: function (jqXHR) { console.log(jqXHR) }
         });
+    }
+});
+
+objectInteraction.on('select', function (e) {
+    var selectFeatures = objectInteraction.getFeatures().getArray();
+    //document.getElementById('status').innerHTML = '&nbsp;' +
+    //    e.target.getFeatures().getLength() +
+    //    ' selected features (last operation selected ' + e.selected.length +
+    //    ' and deselected ' + e.deselected.length + ' features)';
+    if (selectFeatures[0].get('features').length === 1) {
+        var coordinate = selectFeatures[0].getGeometry().getCoordinates();
+        var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
+        content.innerHTML = '<p>You clicked here:</p><code>' + hdms +'</code>';
+        overlay.setPosition(coordinate);
+    } else {
+        overlay.setPosition(undefined);
+        closer.blur();
+        return false;
     }
 });
 
@@ -55,12 +66,3 @@ function fillInfoModal(point) {
     document.getElementById('infIrrigation').innerText = point.nawodnienie;
     document.getElementById('infoProfile').innerText = point.profil;
 }
-
-    //map.on('singleclick', function(evt) {
-    //    var coordinate = evt.coordinate;
-    //    var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
-
-    //    content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
-    //        '</code>';
-    //    overlay.setPosition(coordinate);
-    //});
