@@ -22,7 +22,7 @@ function getLayerSource(layerName) {
         }
     }
     else {
-        if (layerName === 'zwierciadło') {
+        if (layerName === 'zwierciadło wód podziemnych') {
             for (var wkt of Object.keys(objects)) {
                 var feature = wktReader.readFeature(wkt);
                 feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
@@ -30,7 +30,7 @@ function getLayerSource(layerName) {
                 featuresArray.push(feature);
             }
         }
-        if (layerName === 'odwierty') {
+        if (layerName === 'otwory hydrogeologiczne') {
             for (var id of Object.keys(objects)) {
                 var feature = wktReader.readFeature(objects[id]);
                 feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');

@@ -18,6 +18,7 @@
     var mirror = await zwierciadloController.GetZwierciadloGlebokosc();
     var layersProperties = LayersProperties.Layers;
 }
+<!---span id="status">&nbsp;0 selected features</span-->
 <script src="~/lib/createLayers.js"></script>
 <script src="~/lib/searchFunctions.js"></script>
 <script type="text/javascript">
@@ -43,13 +44,13 @@
     var layerProperties = @Html.Raw(Json.Serialize(layersProperties));
 
     var layerObjects = {
-        'miasto': @Html.Raw(Json.Serialize(city)),
+        'granice miasta': @Html.Raw(Json.Serialize(city)),
         'dzielnice': @Html.Raw(Json.Serialize(districts)),
-        'zieleń':@Html.Raw(Json.Serialize(greenery)),
-        'cieki/zbiorniki': @Html.Raw(Json.Serialize(hydro)),
-        'zwierciadło': @Html.Raw(Json.Serialize(mirror)),
-        'obiekty': @Html.Raw(Json.Serialize(objects)),
-        'odwierty': @Html.Raw(Json.Serialize(drilling)),
+        'tereny zielone':@Html.Raw(Json.Serialize(greenery)),
+        'cieki/zbiorniki wodne': @Html.Raw(Json.Serialize(hydro)),
+        'zwierciadło wód podziemnych': @Html.Raw(Json.Serialize(mirror)),
+        'obiekty RBDH': @Html.Raw(Json.Serialize(objects)),
+        'otwory hydrogeologiczne': @Html.Raw(Json.Serialize(drilling)),
     };
 
     var background = new ol.layer.Tile({
@@ -66,7 +67,8 @@
     });
 
     var layers = [background, wms];
-    Object.keys(layerObjects).map(layerName => layers.push(getLayer(layerName)));
+    var layerNames = Object.keys(layerObjects);
+    layerNames.map(name => layers.push(getLayer(name)));
 
     var map = new ol.Map({
         layers: layers,

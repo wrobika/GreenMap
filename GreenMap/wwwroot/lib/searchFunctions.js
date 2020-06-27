@@ -66,12 +66,12 @@ function searchRemove() {
 
 function loadFeatures(data) {
     map.getLayers().forEach(function (layer) {
-        if (layer.get('name') === 'odwierty') {
+        if (layer.get('name') === 'otwory hydrogeologiczne') {
             var featuresArray = [];
             for (var id of Object.keys(data)) {
                 var feature = wktReader.readFeature(data[id]);
                 feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
-                feature.set('color', layerProperties['odwierty'].color);
+                feature.set('color', layerProperties['otwory hydrogeologiczne'].color);
                 feature.setId(id);
                 featuresArray.push(feature);
             }

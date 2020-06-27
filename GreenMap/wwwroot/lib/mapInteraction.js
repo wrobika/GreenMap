@@ -1,24 +1,26 @@
 ﻿var drillingLayer;
 var objectLayer;
 for (var layer of layers) {
-    if (layer.get('name') === 'odwierty')
+    if (layer.get('name') === 'otwory hydrogeologiczne')
         drillingLayer = layer;
-    if (layer.get('name') === 'obiekty')
+    if (layer.get('name') === 'obiekty RBDH')
         objectLayer = layer;
 }
 
 var drillingInteraction = new ol.interaction.Select({
     condition: ol.events.condition.click,
-    layers: [drillingLayer]
+    layers: [drillingLayer],
+    style: false
 });
 
 var objectInteraction = new ol.interaction.Select({
     condition: ol.events.condition.pointerMove,
-    layers: [objectLayer]
+    layers: [objectLayer],
+    style: false
 });
 
 map.addInteraction(drillingInteraction);
-map.addInteraction(objectInteraction);
+//map.addInteraction(objectInteraction);
 
 drillingInteraction.on('select', function (e) {
     var selectFeatures = drillingInteraction.getFeatures().getArray();
