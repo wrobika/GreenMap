@@ -1,9 +1,9 @@
 ﻿var drillingLayer;
 var objectLayer;
 for (var layer of layers) {
-    if (layer.get('name') === 'otwory hydrogeologiczne')
+    if (layer.get('name') === 'drilling')
         drillingLayer = layer;
-    if (layer.get('name') === 'obiekty RBDH')
+    if (layer.get('name') === 'rbdh')
         objectLayer = layer;
 }
 

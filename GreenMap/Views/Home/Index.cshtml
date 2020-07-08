@@ -44,17 +44,17 @@
     var layerProperties = @Html.Raw(Json.Serialize(layersProperties));
 
     var layerObjects = {
-        'granice miasta': @Html.Raw(Json.Serialize(city)),
-        'dzielnice': @Html.Raw(Json.Serialize(districts)),
-        'tereny zielone':@Html.Raw(Json.Serialize(greenery)),
-        'cieki/zbiorniki wodne': @Html.Raw(Json.Serialize(hydro)),
-        'zwierciadło wód podziemnych': @Html.Raw(Json.Serialize(mirror)),
-        'obiekty RBDH': @Html.Raw(Json.Serialize(objects)),
-        'otwory hydrogeologiczne': @Html.Raw(Json.Serialize(drilling)),
+        'city': @Html.Raw(Json.Serialize(city)),
+        'district': @Html.Raw(Json.Serialize(districts)),
+        'greenery': @Html.Raw(Json.Serialize(greenery)),
+        'hydro': @Html.Raw(Json.Serialize(hydro)),
+        'mirror': @Html.Raw(Json.Serialize(mirror)),
+        'rbdh': @Html.Raw(Json.Serialize(objects)),
+        'drilling': @Html.Raw(Json.Serialize(drilling)),
     };
 
     var background = new ol.layer.Tile({
-        name: 'mapa bazowa',
+        name: 'background',
         source: new ol.source.OSM()
     });
 
@@ -80,32 +80,46 @@
         })
     });
 
-    function changeVisibility() {
-        var layerName = this.value;
-        var button = this;
+    function setVisible(button, layerName) {
         var img = document.getElementById('eye_' + layerName);
+        button.className = 'dropdown-item';
+        opacity = layerName != "city" ? layerProperties[layerName].opacity : "0.7";
+        button.style = 'background-color:' + layerProperties[layerName].color
+            + ';opacity:' + opacity
+            + ';color:' + layerProperties[layerName].text;
+        img.src = '@Url.Content("~/css/eye.png")';
+    }
+
+    function setInvisible(button, layerName) {
+        var img = document.getElementById('eye_' + layerName);
+        button.className = 'dropdown-item text-black bg-light';
+        button.style = 'color:black';
+        img.src = '@Url.Content("~/css/eye_closed.png")';
+    }
+
+    function setVisibility(button, changeVisibility) {
+        var layerName = button.value;
         map.getLayers().forEach(function (layer) {
             if (layer.get('name') === layerName) {
                 var isVisible = layer.get('visible');
-                layer.setVisible(!isVisible);
-                if (isVisible) {
-                    button.className = 'dropdown-item text-black bg-light';
-                    button.style = 'color:black';
-                    img.src = '@Url.Content("~/css/eye_closed.png")';
-                } else {
-                    button.className = 'dropdown-item';
-                    button.style = 'background-color:' + layerProperties[layerName].color
-                        + ';opacity:' + layerProperties[layerName].opacity
-                        + ';color:' + layerProperties[layerName].text;
-                    img.src = '@Url.Content("~/css/eye.png")';
+                if (changeVisibility) {
+                    layer.setVisible(!isVisible);
+                    isVisible = !isVisible;
                 }
+                if (isVisible)
+                    setVisible(button, layerName);
+                else
+                    setInvisible(button, layerName);
             }
         });
     }
 
     let buttons = document.querySelectorAll('.dropdown-item')
     buttons.forEach((btn) => {
-        btn.addEventListener("click", changeVisibility);
+        setVisibility(btn, false);
+        btn.addEventListener("click", function () {
+            setVisibility(btn, true);
+        });
     });
 </script>
 <script src="~/lib/mapInteraction.js"></script>

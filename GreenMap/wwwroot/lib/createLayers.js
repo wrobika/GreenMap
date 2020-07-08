@@ -22,7 +22,7 @@ function getLayerSource(layerName) {
         }
     }
     else {
-        if (layerName === 'zwierciadło wód podziemnych') {
+        if (layerName === 'mirror') {
             for (var wkt of Object.keys(objects)) {
                 var feature = wktReader.readFeature(wkt);
                 feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
@@ -30,7 +30,7 @@ function getLayerSource(layerName) {
                 featuresArray.push(feature);
             }
         }
-        if (layerName === 'otwory hydrogeologiczne') {
+        if (layerName === 'drilling') {
             for (var id of Object.keys(objects)) {
                 var feature = wktReader.readFeature(objects[id]);
                 feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
@@ -55,6 +55,7 @@ function getLayer(layerName) {
     });
     return new ol.layer.Vector({
         name: layerName,
+        visible: layerProperties[layerName].visible,
         source: getLayerSource(layerName),
         style: new ol.style.Style({
             stroke: layerStroke,
@@ -72,6 +73,7 @@ function getClusterLayer(layerName) {
     });
     return new ol.layer.Vector({
         name: layerName,
+        visible: layerProperties[layerName].visible,
         source: objectCluster,
         style: function (feature) {
             var size = feature.get('features').length;

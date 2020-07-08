@@ -66,7 +66,7 @@ function searchRemove() {
 
 function loadFeatures(data) {
     map.getLayers().forEach(function (layer) {
-        if (layer.get('name') === 'otwory hydrogeologiczne') {
+        if (layer.get('name') === 'drilling') {
             var featuresArray = [];
             for (var id of Object.keys(data)) {
                 var feature = wktReader.readFeature(data[id]);

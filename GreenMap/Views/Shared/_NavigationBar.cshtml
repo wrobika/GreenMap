@@ -27,14 +27,10 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                     @foreach (var name in layerProperties.Keys)
-                    {
-                        string opacity = name != "granice miasta" ? layerProperties[name].Opacity.ToString(System.Globalization.CultureInfo.InvariantCulture) : "0.7";
-                        string layerStyle = "background-color:" + layerProperties[name].Color +
-                            ";opacity:" + opacity +
-                            ";color:" + layerProperties[name].Text;
-                        <button value="@name" type="button" class="dropdown-item" style=@layerStyle>
-                            <span><img id="eye_@name" src="~/css/eye.png" style="width:20px;opacity:1" /></span>
-                            @name
+                    { 
+                        <button id="button_@name" value="@name" type="button" class="dropdown-item">
+                            <span><img id="eye_@name" style="width:20px;opacity:1" /></span>
+                            @layerProperties[name].FullName
                         </button>
                     }
                 </div>
