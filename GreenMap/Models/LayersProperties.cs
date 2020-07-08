@@ -9,7 +9,7 @@ namespace GreenMap.Models
     {
         public static Dictionary<string, Layer> Layers = new Dictionary<string, Layer>
         {
-            { "mapa", new Layer{ Color = "Gray", Opacity = 1, Text="White"} },
+            { "mapa bazowa", new Layer{ Color = "Gray", Opacity = 1, Text="White"} },
             { "granice miasta", new Layer{ Color = "OrangeRed", Opacity = 0, Stroke="OrangeRed", Text="White"} },
             { "dzielnice", new Layer{ Color = "Gold", Opacity = 0.5, Stroke="Gold", Text="Black"} },
             { "tereny zielone", new Layer{ Color = "LimeGreen", Opacity = 0.7, Stroke="Green", Text="Black"} },

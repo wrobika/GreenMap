@@ -44,9 +44,12 @@ namespace NUnitTestProject
         }
 
         [Test]
-        public void SearchByDepth()
+        public async Task SearchByDepth()
         {
-            
+            OdwiertSearch preferences = new OdwiertSearch { GlebokoscZwierciadla1 = -2, GlebokoscZwierciadla2 = -1 };
+            ActionResult<Dictionary<long, string>> result = await _searchController.SetPreferencesAndSearch(preferences);
+            Assert.IsTrue(result.Value.ContainsKey(51));
+            Assert.IsFalse(result.Value.ContainsKey(50));
         }
 
         [Test]
@@ -56,27 +59,39 @@ namespace NUnitTestProject
         }
 
         [Test]
-        public void SearchByY()
+        public async Task SearchByY()
         {
-            
+            OdwiertSearch preferences = new OdwiertSearch { EurefY1 = 575071, EurefY2 = 575072 };
+            ActionResult<Dictionary<long, string>> result = await _searchController.SetPreferencesAndSearch(preferences);
+            Assert.IsTrue(result.Value.ContainsKey(608));
+            Assert.IsFalse(result.Value.ContainsKey(688));
         }
 
         [Test]
-        public void SearchByX()
+        public async Task SearchByX()
         {
-            
+            OdwiertSearch preferences = new OdwiertSearch { EurefX1 = 241669, EurefX2 = 241670 };
+            ActionResult<Dictionary<long, string>> result = await _searchController.SetPreferencesAndSearch(preferences);
+            Assert.IsTrue(result.Value.ContainsKey(707));
+            Assert.IsFalse(result.Value.ContainsKey(706));
         }
 
         [Test]
-        public void SearchByRbdh()
+        public async Task SearchByRbdh()
         {
-            
+            OdwiertSearch preferences = new OdwiertSearch { NrRbdh = 9730234 };
+            ActionResult<Dictionary<long, string>> result = await _searchController.SetPreferencesAndSearch(preferences);
+            Assert.IsTrue(result.Value.ContainsKey(50));
+            Assert.IsFalse(result.Value.ContainsKey(123));
         }
 
         [Test]
-        public void SearchByName()
+        public async Task SearchByName()
         {
-           
+            OdwiertSearch preferences = new OdwiertSearch { NazwaObiektu = "Odwodnienie SA-4" };
+            ActionResult<Dictionary<long, string>> result = await _searchController.SetPreferencesAndSearch(preferences);
+            Assert.IsTrue(result.Value.ContainsKey(703));
+            Assert.IsFalse(result.Value.ContainsKey(701));
         }
     }
 }
