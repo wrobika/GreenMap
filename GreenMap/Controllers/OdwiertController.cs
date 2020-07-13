@@ -57,7 +57,8 @@ namespace GreenMap.Controllers
                 Lokalizacja = dzielnica.Value,
                 Status = odwiert.Status,
                 Wspolrzedne = odwiert.EurefX.ToString() + " " + odwiert.EurefY.ToString(),
-                GlebokoscZwierciadla = zwierciadlo.Value
+                GlebokoscZwierciadla = zwierciadlo.Value,
+                Filtracja = odwiert.WspFiltracji
             };
             return info;
         }

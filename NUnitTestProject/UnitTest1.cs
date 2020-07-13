@@ -53,9 +53,12 @@ namespace NUnitTestProject
         }
 
         [Test]
-        public void SearchByFiltering()
+        public async Task SearchByFiltering()
         {
-            
+            OdwiertSearch preferences = new OdwiertSearch { Filtracja1 = (decimal)0.001, Filtracja2 = (decimal)0.01 };
+            ActionResult<Dictionary<long?, string>> result = await _searchController.SetPreferencesAndSearch(preferences);
+            Assert.IsTrue(result.Value.ContainsKey(101));
+            Assert.IsFalse(result.Value.ContainsKey(50));
         }
 
         [Test]

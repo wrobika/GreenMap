@@ -40,8 +40,9 @@ namespace GreenMap.Models
         public decimal? GlebokoscZwierciadla2 { get; set; }
 
         [Display(Name = "Współczynnik filtracji [m/s]")]
-        [Range(0, 1000, ErrorMessage = "Współczynnik filtracji musi mieścić się z zakresie od 0 do 1000")]
+        [Range(0, 1, ErrorMessage = "Współczynnik filtracji musi mieścić się z zakresie od 0 do 1")]
         public decimal? Filtracja1 { get; set; }
+        [Range(0, 1, ErrorMessage = "Współczynnik filtracji musi mieścić się z zakresie od 0 do 1")]
         public decimal? Filtracja2 { get; set; }
 
         [Display(Name = "Klasyfikacja hydrogeologiczna gleby/gruntu")]

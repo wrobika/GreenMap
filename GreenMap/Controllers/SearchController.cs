@@ -87,8 +87,20 @@ namespace GreenMap.Controllers
 
         private void SearchByFiltering()
         {
-            if (Preferences.Filtracja1.HasValue || Preferences.Filtracja2.HasValue)
-                throw new NotImplementedException();
+            var filter1 = Preferences.Filtracja1;
+            var filter2 = Preferences.Filtracja2;
+            if (filter1.HasValue || filter2.HasValue)
+            {
+                if (filter1 > filter2)
+                {
+                    decimal? temp = filter1;
+                    filter1 = filter2;
+                    filter2 = temp;
+                }
+                SearchedSet = SearchedSet
+                    .Where(item => item.WspFiltracji > filter1)
+                    .Where(item => item.WspFiltracji < filter2);
+            }
         }
 
         private void SearchByY()
@@ -111,14 +123,14 @@ namespace GreenMap.Controllers
         {
             if (Preferences.NrRbdh.HasValue)
                 SearchedSet = SearchedSet
-                .Where(item => item.NrRbdh.Equals(Preferences.NrRbdh));
+                    .Where(item => item.NrRbdh.Equals(Preferences.NrRbdh));
         }
 
         private void SearchByName()
         {
             if (Preferences.NazwaObiektu != null && !Preferences.NazwaObiektu.Equals(""))
                 SearchedSet = SearchedSet
-                .Where(item => item.NazwaObiektu.Equals(Preferences.NazwaObiektu));
+                    .Where(item => item.NazwaObiektu.Equals(Preferences.NazwaObiektu));
         }
     }
 }
