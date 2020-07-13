@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
-namespace GreenMap
+namespace GreenMap.Models
 {
     public partial class Odwiert
     {
-        public long Objectid { get; set; }
         public short? Id { get; set; }
         public int? NrUjecia { get; set; }
         public int? NrRbdh { get; set; }
@@ -15,6 +15,10 @@ namespace GreenMap
         public string Status { get; set; }
         public double? EurefX { get; set; }
         public double? EurefY { get; set; }
+        public long? Objectid { get; set; }
         public int? DzielnicaId { get; set; }
+        public decimal? WspFiltracji { get; set; }
+        public string NazwaKlasy { get; set; }
+        public string NrKlasy { get; set; }
     }
 }

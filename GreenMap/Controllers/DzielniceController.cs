@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using GreenMap;
+using GreenMap.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GreenMap.Controllers

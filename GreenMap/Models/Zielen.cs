@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using NetTopologySuite.Geometries;
 
-namespace GreenMap
+namespace GreenMap.Models
 {
     public partial class Zielen
     {

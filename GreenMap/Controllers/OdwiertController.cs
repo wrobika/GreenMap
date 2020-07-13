@@ -29,7 +29,7 @@ namespace GreenMap.Controllers
 
         // GET: api/Odwiert
         [HttpGet]
-        public async Task<Dictionary<long, string>> GetOdwiert()
+        public async Task<Dictionary<long?, string>> GetOdwiert()
         {
             return await GetWktWithId(_context.Odwiert);
         }
@@ -38,7 +38,10 @@ namespace GreenMap.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<OdwiertInfo>> GetOdwiert(long id)
         {
-            var odwiert = await _context.Odwiert.FindAsync(id);
+            var odwiert = await _context.Odwiert
+                .Where(item => item.Objectid == id)
+                .OrderBy(item => item.WspFiltracji)
+                .FirstOrDefaultAsync();
 
             if (odwiert == null)
             {
@@ -72,14 +75,21 @@ namespace GreenMap.Controllers
             return new SelectList(statusList, "Value", "Text");
         }
 
-        private async Task<Dictionary<long, string>> GetWktWithId(IQueryable<Odwiert> drillings)
+        public static async Task<Dictionary<long?, string>> GetWktWithId(IQueryable<Odwiert> drillings)
         {
-            var wkt = await drillings
+            var wktList = await drillings
                 .Where(item => item.EurefX != null)
                 .Where(item => item.EurefY != null)
-                .ToDictionaryAsync(item => item.Objectid,
-                    item => new Point(item.EurefY.Value, item.EurefX.Value).ToString());
-            return wkt;
+                .Select(item => new
+                {
+                    id = item.Objectid,
+                    wkt = new Point(item.EurefY.Value, item.EurefX.Value).ToString()
+                })
+                .ToListAsync();
+            var wktDictionary = new Dictionary<long?, string>();
+            foreach (var item in wktList)
+                wktDictionary[item.id] = item.wkt;
+            return wktDictionary;
         }
     }
 }

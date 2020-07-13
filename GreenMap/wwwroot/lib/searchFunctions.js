@@ -71,7 +71,7 @@ function loadFeatures(data) {
             for (var id of Object.keys(data)) {
                 var feature = wktReader.readFeature(data[id]);
                 feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
-                feature.set('color', layerProperties['otwory hydrogeologiczne'].color);
+                feature.set('color', layerProperties['drilling'].color);
                 feature.setId(id);
                 featuresArray.push(feature);
             }

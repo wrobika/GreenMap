@@ -2,10 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
-using GreenMap.Models;
 
-namespace GreenMap
+namespace GreenMap.Models
 {
+    //Scaffold-DbContext epionierConnectionString Npgsql.EntityFrameworkCore.PostgreSQL -OutputDir Models -Force
     public partial class epionierContext : DbContext
     {
         public epionierContext()
@@ -21,6 +21,7 @@ namespace GreenMap
         public virtual DbSet<Dzielnice> Dzielnice { get; set; }
         public virtual DbSet<GraniceMiasta> GraniceMiasta { get; set; }
         public virtual DbSet<Hydro> Hydro { get; set; }
+        public virtual DbSet<Hydroizohipsy> Hydroizohipsy { get; set; }
         public virtual DbSet<Odwiert> Odwiert { get; set; }
         public virtual DbSet<Zielen> Zielen { get; set; }
         public virtual DbSet<ZwierciadloGl> ZwierciadloGl { get; set; }
@@ -30,7 +31,7 @@ namespace GreenMap
             if (!optionsBuilder.IsConfigured)
             {
                 var configuration = new ConfigurationBuilder().
-                    AddJsonFile(@"C:\Users\wnaziemiec\AppData\Roaming\Microsoft\UserSecrets\aspnet-GreenMap-F8C496C6-DBED-4523-A5C8-A991D3B79B61\secrets.json", optional: false).Build();
+                   AddJsonFile(@"C:\Users\wnaziemiec\AppData\Roaming\Microsoft\UserSecrets\aspnet-GreenMap-F8C496C6-DBED-4523-A5C8-A991D3B79B61\secrets.json", optional: false).Build();
                 var connectionString = configuration.GetConnectionString("EpionierContext");
                 optionsBuilder.UseNpgsql(connectionString, x => x.UseNetTopologySuite());
             }
@@ -234,16 +235,32 @@ namespace GreenMap
                     .HasMaxLength(128);
             });
 
+            modelBuilder.Entity<Hydroizohipsy>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("hydroizohipsy");
+
+                entity.HasIndex(e => e.Geom)
+                    .HasName("hydroizohipsy_geom_159438665974")
+                    .HasMethod("gist");
+
+                entity.Property(e => e.Geom)
+                    .HasColumnName("geom")
+                    .HasColumnType("geometry(LineString,2180)");
+
+                entity.Property(e => e.Recnum)
+                    .HasColumnName("recnum")
+                    .HasMaxLength(32);
+
+                entity.Property(e => e.ZwWody).HasColumnName("zw_wody");
+            });
+
             modelBuilder.Entity<Odwiert>(entity =>
             {
-                entity.HasKey(e => e.Objectid)
-                    .HasName("odwiert_pkey");
+                entity.HasNoKey();
 
                 entity.ToTable("odwiert");
-
-                entity.Property(e => e.Objectid)
-                    .HasColumnName("objectid")
-                    .ValueGeneratedNever();
 
                 entity.Property(e => e.DzielnicaId).HasColumnName("dzielnica_id");
 
@@ -257,13 +274,23 @@ namespace GreenMap
                     .HasColumnName("lokalizacja")
                     .HasMaxLength(17);
 
+                entity.Property(e => e.NazwaKlasy)
+                    .HasColumnName("nazwa_klasy")
+                    .HasMaxLength(70);
+
                 entity.Property(e => e.NazwaObiektu)
                     .HasColumnName("nazwa_obiektu")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.NrKlasy)
+                    .HasColumnName("nr_klasy")
+                    .HasMaxLength(1);
+
                 entity.Property(e => e.NrRbdh).HasColumnName("nr_rbdh");
 
                 entity.Property(e => e.NrUjecia).HasColumnName("nr_ujecia");
+
+                entity.Property(e => e.Objectid).HasColumnName("objectid");
 
                 entity.Property(e => e.OkresSpagu)
                     .HasColumnName("okres_spagu")
@@ -272,6 +299,10 @@ namespace GreenMap
                 entity.Property(e => e.Status)
                     .HasColumnName("status")
                     .HasMaxLength(25);
+
+                entity.Property(e => e.WspFiltracji)
+                    .HasColumnName("wsp_filtracji")
+                    .HasColumnType("numeric(31,15)");
             });
 
             modelBuilder.Entity<Zielen>(entity =>
@@ -384,14 +415,9 @@ namespace GreenMap
 
             modelBuilder.Entity<ZwierciadloGl>(entity =>
             {
-                entity.HasKey(e => e.Objectid)
-                    .HasName("zwierciadlo_gl_pkey");
+                entity.HasNoKey();
 
                 entity.ToTable("zwierciadlo_gl");
-
-                entity.Property(e => e.Objectid)
-                    .HasColumnName("objectid")
-                    .ValueGeneratedNever();
 
                 entity.Property(e => e.DzielnicaId).HasColumnName("dzielnica_id");
 
@@ -407,7 +433,21 @@ namespace GreenMap
                     .HasColumnName("gl_ustabilizowana")
                     .HasColumnType("numeric(7,2)");
 
+                entity.Property(e => e.NazwaKlasy)
+                    .HasColumnName("nazwa_klasy")
+                    .HasMaxLength(70);
+
+                entity.Property(e => e.NrKlasy)
+                    .HasColumnName("nr_klasy")
+                    .HasMaxLength(1);
+
                 entity.Property(e => e.NrRbdh).HasColumnName("nr_rbdh");
+
+                entity.Property(e => e.Objectid).HasColumnName("objectid");
+
+                entity.Property(e => e.WspFiltracji)
+                    .HasColumnName("wsp_filtracji")
+                    .HasColumnType("numeric(31,15)");
             });
 
             modelBuilder.Entity<OdwiertSearch>(entity =>
@@ -419,7 +459,6 @@ namespace GreenMap
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
         public DbSet<GreenMap.Models.OdwiertSearch> OdwiertSearch { get; set; }
     }
 }

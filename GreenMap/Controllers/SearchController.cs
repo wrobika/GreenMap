@@ -28,16 +28,15 @@ namespace GreenMap.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Dictionary<long, string>>> SetPreferencesAndSearch(
+        public async Task<ActionResult<Dictionary<long?, string>>> SetPreferencesAndSearch(
             [Bind("NazwaObiektu,NrRbdh,Lokalizacja,Status,EurefX1,EurefX2,EurefY1,EurefY2,GlebokoscZwierciadla1,GlebokoscZwierciadla2,Filtracja1,Filtracja2,HydroGleby,ZanieczyszczenieGleby, JakoscWody,Nawodnienie")] 
             OdwiertSearch preferences)
         {
             Preferences = preferences;
-            Search();
-            return await GetWktWithId();
+            return await Search();
         }
 
-        private void Search()
+        private async Task<Dictionary<long?, string>> Search()
         {
             SearchByStatus();
             SearchByDistrict();
@@ -47,15 +46,7 @@ namespace GreenMap.Controllers
             SearchByDepth();
             SearchByRbdh();
             SearchByName();
-        }
-
-        private async Task<Dictionary<long, string>> GetWktWithId()
-        {
-            return await SearchedSet
-                .Where(item => item.EurefX != null)
-                .Where(item => item.EurefY != null)
-                .ToDictionaryAsync(item => item.Objectid,
-                    item => new Point(item.EurefY.Value, item.EurefX.Value).ToString());
+            return await OdwiertController.GetWktWithId(SearchedSet);
         }
 
         private void SearchByStatus()
