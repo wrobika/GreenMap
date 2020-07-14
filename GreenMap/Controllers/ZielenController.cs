@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GreenMap.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GreenMap.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ZielenController : Controller
     {
         private readonly epionierContext _context;

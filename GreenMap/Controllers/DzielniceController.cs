@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GreenMap.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GreenMap.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DzielniceController : ControllerBase
     {
         private readonly epionierContext _context;

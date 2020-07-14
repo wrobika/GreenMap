@@ -9,11 +9,13 @@ using GreenMap;
 using NetTopologySuite.Geometries;
 using GreenMap.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GreenMap.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OdwiertController : ControllerBase
     {
         private readonly epionierContext _context;

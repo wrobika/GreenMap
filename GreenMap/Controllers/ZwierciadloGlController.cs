@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GreenMap.Models;
 using NetTopologySuite.Geometries;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GreenMap.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ZwierciadloGlController : ControllerBase
     {
         private readonly epionierContext _context;
