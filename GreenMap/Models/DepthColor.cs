@@ -7,7 +7,17 @@ namespace GreenMap.Models
 {
     public class DepthColor
     {
-        public static string GetColor(decimal depth)
+        public static string GetColor(int maxDepth, int minDepth, int actualDepth)
+        {
+            int range = maxDepth - minDepth;
+            int value = actualDepth - minDepth;
+
+            int green = (255 * value) / range; // calculate green (the closer the value is to max, the greener it gets)
+            int blue = 255 - green; // set red as inverse of green
+
+            return "rgb(0," + green + "," + blue + ")";
+        }
+        public static string GetPointColor(decimal depth)
         {
             if (depth > -0.5M)
                 return "rgb(0,255,255)";
@@ -28,6 +38,7 @@ namespace GreenMap.Models
             else
                 return "rgb(0,0,0)";
         }
+
         public static Dictionary<decimal, string> Ranges = new Dictionary<decimal, string>
         {
             { -0.5M, "rgb(0,255,255)" },

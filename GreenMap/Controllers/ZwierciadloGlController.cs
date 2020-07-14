@@ -47,7 +47,7 @@ namespace GreenMap.Controllers
             foreach(var item in points)
             {
                 string wkt = new Point(item.EurefY.Value, item.EurefX.Value).ToString();
-                wktDepthDictionary[wkt] = DepthColor.GetColor(item.GlUstabilizowana.Value);
+                wktDepthDictionary[wkt] = DepthColor.GetPointColor(item.GlUstabilizowana.Value);
             }
             return wktDepthDictionary;
         }

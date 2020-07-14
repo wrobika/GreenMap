@@ -9,6 +9,8 @@
     var miastoController = new GreenMap.Controllers.GraniceMiastaController(epionierDbContext);
     var odwiertController = new GreenMap.Controllers.OdwiertController(epionierDbContext);
     var zwierciadloController = new GreenMap.Controllers.ZwierciadloGlController(epionierDbContext);
+    var hydroizohipsyController = new GreenMap.Controllers.HydroizohipsyController(epionierDbContext);
+
     var greenery = await zielenController.GetZielen();
     var objects = await cbdhController.GetCbdhObj();
     var hydro = await hydroController.GetHydro();
@@ -16,6 +18,7 @@
     var city = await miastoController.GetGraniceMiasta();
     var drilling = await odwiertController.GetOdwiert();
     var mirror = await zwierciadloController.GetZwierciadloGlebokosc();
+    var hydroizohypse = await hydroizohipsyController.GetHydroizohipsy();
     var layersProperties = LayersProperties.Layers;
 }
 <!---span id="status">&nbsp;0 selected features</span-->
@@ -48,9 +51,10 @@
         'district': @Html.Raw(Json.Serialize(districts)),
         'greenery': @Html.Raw(Json.Serialize(greenery)),
         'hydro': @Html.Raw(Json.Serialize(hydro)),
-        'mirror': @Html.Raw(Json.Serialize(mirror)),
+        @*'mirror': @Html.Raw(Json.Serialize(mirror)),*@
         'rbdh': @Html.Raw(Json.Serialize(objects)),
         'drilling': @Html.Raw(Json.Serialize(drilling)),
+        'hydroizohypse': @Html.Raw(Json.Serialize(hydroizohypse)),
     };
 
     var background = new ol.layer.Tile({
@@ -66,7 +70,7 @@
         })
     });
 
-    var layers = [background, wms];
+    var layers = [background];
     var layerNames = Object.keys(layerObjects);
     layerNames.map(name => layers.push(getLayer(name)));
 

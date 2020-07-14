@@ -7,6 +7,7 @@
 }
 
 proj4.defs('EPSG:2180', '+proj=tmerc + lat_0=0 + lon_0=19 + k=0.9993 + x_0=500000 + y_0=-5300000 + ellps=GRS80 + towgs84=0, 0, 0, 0, 0, 0, 0 + units=m + no_defs');
+proj4.defs('EPSG:2178', '+proj=tmerc +lat_0=0 +lon_0=21 +k=0.999923 +x_0=7500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs ');
 ol.proj.proj4.register(proj4);
 var wktReader = new ol.format.WKT();
 
@@ -30,6 +31,15 @@ function getLayerSource(layerName) {
                 featuresArray.push(feature);
             }
         }
+        if (layerName === 'hydroizohypse') {
+            for (var wkt of Object.keys(objects)) {
+                var feature = wktReader.readFeature(wkt);
+                feature.getGeometry().transform('EPSG:2178', 'EPSG:3857');
+                var depthColor = objects[wkt];
+                feature.set('color', depthColor);
+                featuresArray.push(feature);
+            }
+        }
         if (layerName === 'drilling') {
             for (var id of Object.keys(objects)) {
                 var feature = wktReader.readFeature(objects[id]);
@@ -49,21 +59,33 @@ function getLayer(layerName) {
     if (layerProperties[layerName].cluster === true) {
         return getClusterLayer(layerName);
     }
-    var layerStroke = layerProperties[layerName].stroke === null ? null : new ol.style.Stroke({
-        color: layerProperties[layerName].stroke,
-        width: 2
-    });
     return new ol.layer.Vector({
         name: layerName,
         visible: layerProperties[layerName].visible,
         source: getLayerSource(layerName),
-        style: new ol.style.Style({
-            stroke: layerStroke,
-            fill: new ol.style.Fill({
-                color: rgba(layerName)
-            })
-        })
+        style: function (feature) {
+            return getStyle(feature, layerName);
+        }
     });
+}
+
+function getStyle(feature, layerName) {
+    var layerStroke = layerProperties[layerName].stroke === null ? null : new ol.style.Stroke({
+        color: layerProperties[layerName].stroke,
+        width: 2
+    });
+    if (layerName === 'hydroizohypse') {
+        layerStroke = new ol.style.Stroke({
+            color: feature.get('color'),
+            width: 1
+        });
+    }
+    return new ol.style.Style({
+        stroke: layerStroke,
+        fill: new ol.style.Fill({
+            color: rgba(layerName)
+        })
+    })
 }
 
 function getClusterLayer(layerName) {
