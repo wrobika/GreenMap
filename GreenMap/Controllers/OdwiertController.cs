@@ -60,7 +60,8 @@ namespace GreenMap.Controllers
                 Status = odwiert.Status,
                 Wspolrzedne = odwiert.EurefX.ToString() + " " + odwiert.EurefY.ToString(),
                 GlebokoscZwierciadla = zwierciadlo.Value,
-                Filtracja = odwiert.WspFiltracji
+                Filtracja = odwiert.WspFiltracji,
+                KlasaFiltracji = odwiert.NazwaKlasy
             };
             return info;
         }

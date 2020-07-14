@@ -31,6 +31,7 @@ function emptySearchForm() {
     $('#EurefY2').val("");
     $('#GlebokoscZwierciadla1').val("");
     $('#GlebokoscZwierciadla2').val("");
+    $('#KlasaFiltracji').val("");
     $('#Filtracja1').val("");
     $('#Filtracja2').val("");
     $('#HydroGleby').val("");

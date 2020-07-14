@@ -29,6 +29,9 @@ namespace GreenMap.Models
         [Display(Name = "Współczynnik filtracji [m/s]")]
         public decimal? Filtracja { get; set; }
 
+        [Display(Name = "Klasa filtracji")]
+        public string KlasaFiltracji { get; set; }
+
         [Display(Name = "Klasyfikacja hydrogeologiczna gleby/gruntu")]
         public string HydroGleby { get; set; }
 

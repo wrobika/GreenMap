@@ -61,6 +61,7 @@ function fillInfoModal(point) {
     document.getElementById('infoDistrict').innerText = point.lokalizacja;
     document.getElementById('infoCoord').innerText = point.wspolrzedne;
     document.getElementById('infoDepth').innerText = point.glebokoscZwierciadla;
+    document.getElementById('infoFilterClass').innerText = point.klasaFiltracji;
     document.getElementById('infoFilter').innerText = point.filtracja;
     document.getElementById('infoHydro').innerText = point.hydroGleby;
     document.getElementById('infoImpurity').innerText = point.zanieczyszczenieGleby;
