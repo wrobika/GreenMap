@@ -41,6 +41,7 @@ namespace GreenMap.Controllers
         private async Task<Dictionary<long?, string>> Search()
         {
             SearchByStatus();
+            SearchByFilteringClass();
             SearchByDistrict();
             SearchByX();
             SearchByY();
@@ -56,6 +57,13 @@ namespace GreenMap.Controllers
             if (Preferences.Status != null && !Preferences.Status.Equals(""))
                 SearchedSet = SearchedSet
                     .Where(item => item.Status.Equals(Preferences.Status));
+        }
+
+        private void SearchByFilteringClass()
+        {
+            if (Preferences.KlasaFiltracji != null && !Preferences.KlasaFiltracji.Equals(""))
+                SearchedSet = SearchedSet
+                    .Where(item => item.NazwaKlasy.Equals(Preferences.KlasaFiltracji));
         }
 
         private void SearchByDistrict()

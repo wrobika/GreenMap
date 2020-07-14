@@ -5,9 +5,11 @@
     var odwiertController = new GreenMap.Controllers.OdwiertController(epionierDbContext);
     SelectList districtList = await dzielniceController.GetSelectList();
     SelectList statusList = await odwiertController.GetStatusSelectList();
+    SelectList filteringClassList = await odwiertController.GetFilterClassSelectList();
     var partialViewData = new ViewDataDictionary(this.ViewData) {
         { "districtList", districtList },
-        { "statusList", statusList }
+        { "statusList", statusList },
+        { "filteringClassList", filteringClassList}
     };
 }
     

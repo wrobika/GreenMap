@@ -2,6 +2,7 @@
 @{ 
     SelectList districtList = (SelectList)ViewData["districtList"];
     SelectList statusList = (SelectList)ViewData["statusList"];
+    SelectList filteringClassList = (SelectList)ViewData["filteringClassList"];
 }
 
 <div class="modal fade bd-search-modal-lg" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
@@ -64,6 +65,14 @@
                         <span asp-validation-for="GlebokoscZwierciadla2" class="text-danger"></span>
                     </div>
                     <div class="form-group">
+                        <label asp-for="KlasaFiltracji" class="control-label"></label>
+                        <select asp-for="KlasaFiltracji"
+                                class="form-control"
+                                asp-items="@filteringClassList"
+                                id="KlasaFiltracji">
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label asp-for="Filtracja1" class="control-label"></label>
                         <input asp-for="Filtracja1" id="Filtracja1" class="form-control" placeholder="określ początek zakresu" />
                         <span asp-validation-for="Filtracja1" class="text-danger"></span>
@@ -72,25 +81,25 @@
                     </div>
 
                     @*<div class="form-group">
-                        <label asp-for="HydroGleby" class="control-label"></label>
-                        <input asp-for="HydroGleby" id="HydroGleby" class="form-control" />
-                        <span asp-validation-for="HydroGleby" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="ZanieczyszczenieGleby" class="control-label"></label>
-                        <input asp-for="ZanieczyszczenieGleby" id="ZanieczyszczenieGleby" class="form-control" />
-                        <span asp-validation-for="ZanieczyszczenieGleby" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="JakoscWody" class="control-label"></label>
-                        <input asp-for="JakoscWody" id="JakoscWody" class="form-control" />
-                        <span asp-validation-for="JakoscWody" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Nawodnienie" class="control-label"></label>
-                        <input asp-for="Nawodnienie" id="Nawodnienie" class="form-control" />
-                        <span asp-validation-for="Nawodnienie" class="text-danger"></span>
-                    </div>*@
+            <label asp-for="HydroGleby" class="control-label"></label>
+            <input asp-for="HydroGleby" id="HydroGleby" class="form-control" />
+            <span asp-validation-for="HydroGleby" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ZanieczyszczenieGleby" class="control-label"></label>
+            <input asp-for="ZanieczyszczenieGleby" id="ZanieczyszczenieGleby" class="form-control" />
+            <span asp-validation-for="ZanieczyszczenieGleby" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="JakoscWody" class="control-label"></label>
+            <input asp-for="JakoscWody" id="JakoscWody" class="form-control" />
+            <span asp-validation-for="JakoscWody" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Nawodnienie" class="control-label"></label>
+            <input asp-for="Nawodnienie" id="Nawodnienie" class="form-control" />
+            <span asp-validation-for="Nawodnienie" class="text-danger"></span>
+        </div>*@
                     <button id="searchSubmit" type="button" class="btn btn-success btn-block">Szukaj</button>
                     <button id="searchRemove" type="button" class="btn btn-danger btn-block">Usuń filtrowanie i przywróc wszystkie obiekty</button>
                 </form>

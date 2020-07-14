@@ -10,6 +10,7 @@
     searchModel.EurefY2 = $('#EurefY2').val();
     searchModel.GlebokoscZwierciadla1 = $('#GlebokoscZwierciadla1').val();
     searchModel.GlebokoscZwierciadla2 = $('#GlebokoscZwierciadla2').val();
+    searchModel.KlasaFiltracji = $('#KlasaFiltracji').val();
     searchModel.Filtracja1 = $('#Filtracja1').val();
     searchModel.Filtracja2 = $('#Filtracja2').val();
     searchModel.HydroGleby = $('#HydroGleby').val();

@@ -78,6 +78,19 @@ namespace GreenMap.Controllers
             return new SelectList(statusList, "Value", "Text");
         }
 
+        public async Task<SelectList> GetFilterClassSelectList()
+        {
+            var possibleFilterClass = await _context.Odwiert
+                .Select(item => item.NazwaKlasy)
+                .Distinct()
+                .Select(className => new SelectListItem { Text = className, Value = className })
+                .ToListAsync();
+            List<SelectListItem> filterClassList = new List<SelectListItem>();
+            filterClassList.Add(new SelectListItem { Selected = true, Text = "", Value = "" });
+            filterClassList.AddRange(possibleFilterClass);
+            return new SelectList(filterClassList, "Value", "Text");
+        }
+
         public static async Task<Dictionary<long?, string>> GetWktWithId(IQueryable<Odwiert> drillings)
         {
             var wktList = await drillings

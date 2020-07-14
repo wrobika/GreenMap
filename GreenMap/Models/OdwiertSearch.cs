@@ -39,6 +39,9 @@ namespace GreenMap.Models
         [Range(-1000, 0, ErrorMessage = "Głębokość musi mieścić się w zakresie od -1000 do 0")]
         public decimal? GlebokoscZwierciadla2 { get; set; }
 
+        [Display(Name = "Klasa filtracji")]
+        public string KlasaFiltracji { get; set; }
+
         [Display(Name = "Współczynnik filtracji [m/s]")]
         [Range(0, 1, ErrorMessage = "Współczynnik filtracji musi mieścić się z zakresie od 0 do 1")]
         public decimal? Filtracja1 { get; set; }
