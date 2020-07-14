@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace GreenMap.Models
 {
-    public class DepthColor
+    public class Color
     {
-        public static string GetColor(int maxDepth, int minDepth, int actualDepth)
+        public static string GetDepthColor(int maxDepth, int minDepth, int actualDepth)
         {
             int range = maxDepth - minDepth;
             int value = actualDepth - minDepth;
@@ -17,7 +17,17 @@ namespace GreenMap.Models
 
             return "rgb(0," + green + "," + blue + ")";
         }
-        public static string GetPointColor(decimal depth)
+
+        public static string GetFilteringColor(string filteringClass)
+        {
+            if (filteringClass.Equals("A")) return "DarkBlue";
+            if (filteringClass.Equals("B")) return "Blue";
+            if (filteringClass.Equals("C")) return "Yellow";
+            if (filteringClass.Equals("D")) return "Orange";
+            if (filteringClass.Equals("E")) return "Red";
+            else return "Black";
+        }
+        public static string GetDepthPointColor(decimal depth)
         {
             if (depth > -0.5M)
                 return "rgb(0,255,255)";
@@ -39,7 +49,7 @@ namespace GreenMap.Models
                 return "rgb(0,0,0)";
         }
 
-        public static Dictionary<decimal, string> Ranges = new Dictionary<decimal, string>
+        public static Dictionary<decimal, string> DepthRanges = new Dictionary<decimal, string>
         {
             { -0.5M, "rgb(0,255,255)" },
             { -1M, "rgb(0,192,255)" },

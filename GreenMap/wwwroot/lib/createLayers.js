@@ -23,7 +23,7 @@ function getLayerSource(layerName) {
         }
     }
     else {
-        if (layerName === 'mirror') {
+        if (layerName === 'filter') {
             for (var wkt of Object.keys(objects)) {
                 var feature = wktReader.readFeature(wkt);
                 feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
@@ -70,9 +70,16 @@ function getLayer(layerName) {
 }
 
 function getStyle(feature, layerName) {
-    var layerStroke = layerProperties[layerName].stroke === null ? null : new ol.style.Stroke({
-        color: layerProperties[layerName].stroke,
-        width: 2
+    var layerStroke = null;
+    if (layerName === 'city') {
+        layerStroke = new ol.style.Stroke({
+            color: layerProperties[layerName].stroke,
+            width: 2
+        });
+    }
+
+    var layerFill = new ol.style.Fill({
+        color: rgba(layerName)
     });
     if (layerName === 'hydroizohypse') {
         layerStroke = new ol.style.Stroke({
@@ -80,11 +87,15 @@ function getStyle(feature, layerName) {
             width: 1
         });
     }
+    if (layerName === 'filter') {
+        layerFill = new ol.style.Fill({
+            color: feature.get('color'),
+        });
+    }
+
     return new ol.style.Style({
         stroke: layerStroke,
-        fill: new ol.style.Fill({
-            color: rgba(layerName)
-        })
+        fill: layerFill
     })
 }
 

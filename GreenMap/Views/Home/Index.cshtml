@@ -16,9 +16,9 @@
     var hydro = await hydroController.GetHydro();
     var districts = await dzielniceController.GetDzielnice();
     var city = await miastoController.GetGraniceMiasta();
-    var drilling = await odwiertController.GetOdwiert();
-    var mirror = await zwierciadloController.GetZwierciadloGlebokosc();
     var hydroizohypse = await hydroizohipsyController.GetHydroizohipsy();
+    var drilling = await odwiertController.GetOdwiert();
+    var filter = await zwierciadloController.GetZwierciadloFiltracja();
     var layersProperties = LayersProperties.Layers;
 }
 <!---span id="status">&nbsp;0 selected features</span-->
@@ -51,10 +51,10 @@
         'district': @Html.Raw(Json.Serialize(districts)),
         'greenery': @Html.Raw(Json.Serialize(greenery)),
         'hydro': @Html.Raw(Json.Serialize(hydro)),
-        @*'mirror': @Html.Raw(Json.Serialize(mirror)),*@
+        'hydroizohypse': @Html.Raw(Json.Serialize(hydroizohypse)),
+        'filter': @Html.Raw(Json.Serialize(filter)),
         'rbdh': @Html.Raw(Json.Serialize(objects)),
         'drilling': @Html.Raw(Json.Serialize(drilling)),
-        'hydroizohypse': @Html.Raw(Json.Serialize(hydroizohypse)),
     };
 
     var background = new ol.layer.Tile({

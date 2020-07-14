@@ -33,7 +33,7 @@ namespace GreenMap.Controllers
             var wktWithColor = await _context.Hydroizohipsy
                 .Where(item => item.ZwWody.HasValue)
                 .ToDictionaryAsync(item => item.Geom.ToText(),
-                    item => DepthColor.GetColor(maxDepth, minDepth, item.ZwWody.Value));
+                    item => Color.GetDepthColor(maxDepth, minDepth, item.ZwWody.Value));
             return wktWithColor;
         }
     }

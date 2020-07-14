@@ -35,21 +35,21 @@ namespace GreenMap.Controllers
             return wkt;
         }
 
-        public async Task<Dictionary<string, string>> GetZwierciadloGlebokosc()
+        public async Task<Dictionary<string, string>> GetZwierciadloFiltracja()
         {
             var points = await _context.ZwierciadloGl
                  .Where(item => item.EurefX != null)
                  .Where(item => item.EurefY != null)
-                 .Where(item => item.GlUstabilizowana != null)
-                 .Select(item => new { item.EurefX, item.EurefY, item.GlUstabilizowana})
+                 .Where(item => item.NrKlasy != null)
+                 .Select(item => new { item.EurefX, item.EurefY, item.NrKlasy})
                  .ToListAsync();
-            var wktDepthDictionary = new Dictionary<string, string>();
+            var wktWithFiltering = new Dictionary<string, string>();
             foreach(var item in points)
             {
                 string wkt = new Point(item.EurefY.Value, item.EurefX.Value).ToString();
-                wktDepthDictionary[wkt] = DepthColor.GetPointColor(item.GlUstabilizowana.Value);
+                wktWithFiltering[wkt] = Color.GetFilteringColor(item.NrKlasy);
             }
-            return wktDepthDictionary;
+            return wktWithFiltering;
         }
 
         public async Task<List<string>> GetZwierciadloGl(decimal upperBound, decimal lowerBound)
