@@ -35,50 +35,6 @@ namespace GreenMap.Controllers
             return wkt;
         }
 
-        public async Task<Dictionary<string, string>> GetZwierciadloFiltracja()
-        {
-            var points = await _context.ZwierciadloGl
-                 .Where(item => item.EurefX != null)
-                 .Where(item => item.EurefY != null)
-                 .Where(item => item.NrKlasy != null)
-                 .Select(item => new { item.EurefX, item.EurefY, item.NrKlasy})
-                 .ToListAsync();
-            var wktWithFiltering = new Dictionary<string, string>();
-            foreach(var item in points)
-            {
-                string wkt = new Point(item.EurefY.Value, item.EurefX.Value).ToString();
-                wktWithFiltering[wkt] = Color.GetFilteringColor(item.NrKlasy);
-            }
-            return wktWithFiltering;
-        }
-
-        public async Task<List<string>> GetZwierciadloGl(decimal upperBound, decimal lowerBound)
-        {
-            var wkt = await _context.ZwierciadloGl
-                 .Where(item => item.EurefX != null)
-                 .Where(item => item.EurefY != null)
-                 .Where(item => item.GlUstabilizowana != null)
-                 .Where(item => item.GlUstabilizowana.Value < upperBound)
-                 .Where(item => item.GlUstabilizowana.Value > lowerBound)
-                 .Select(item => new Point(item.EurefY.Value, item.EurefX.Value).ToString())
-                 .ToListAsync();
-            return wkt;
-        }
-
-        // GET: api/ZwierciadloGl/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ZwierciadloGl>> GetZwierciadloGl(int id)
-        {
-            var zwierciadloGl = await _context.ZwierciadloGl.FindAsync(id);
-
-            if (zwierciadloGl == null)
-            {
-                return NotFound();
-            }
-
-            return zwierciadloGl;
-        }
-
         public async Task<ActionResult<decimal?>> GetGlebokosc(int? nrRbdh)
         {
             if (!nrRbdh.HasValue)

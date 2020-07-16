@@ -24,17 +24,13 @@ namespace GreenMap.Controllers
 
         // GET: api/Hydro
         [HttpGet]
-        public async Task<Dictionary<string, string>> GetHydroizohipsy()
+        public async Task<Dictionary<string, int>> GetHydroizohipsy()
         {
-            int maxDepth = await _context.Hydroizohipsy
-                .MaxAsync(item => item.ZwWody.Value);
-            int minDepth = await _context.Hydroizohipsy
-                .MinAsync(item => item.ZwWody.Value);
-            var wktWithColor = await _context.Hydroizohipsy
+            var wktWithValue = await _context.Hydroizohipsy
                 .Where(item => item.ZwWody.HasValue)
                 .ToDictionaryAsync(item => item.Geom.ToText(),
-                    item => Color.GetDepthColor(maxDepth, minDepth, item.ZwWody.Value));
-            return wktWithColor;
+                    item => item.ZwWody.Value);
+            return wktWithValue;
         }
     }
 }

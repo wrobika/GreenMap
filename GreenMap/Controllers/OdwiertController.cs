@@ -19,7 +19,7 @@ namespace GreenMap.Controllers
     public class OdwiertController : ControllerBase
     {
         private readonly epionierContext _context;
-        private readonly  DzielniceController _dzielniceController;
+        private readonly DzielniceController _dzielniceController;
         private readonly ZwierciadloGlController _zwierciadloController;
 
         public OdwiertController(epionierContext context)
@@ -74,7 +74,7 @@ namespace GreenMap.Controllers
                 .Select(status => new SelectListItem { Text = status, Value = status })
                 .ToListAsync();
             List<SelectListItem> statusList = new List<SelectListItem>();
-            statusList.Add(new SelectListItem { Selected=true, Text = "", Value = "" });
+            statusList.Add(new SelectListItem { Selected = true, Text = "", Value = "" });
             statusList.AddRange(possibleStatus);
             return new SelectList(statusList, "Value", "Text");
         }
@@ -107,6 +107,23 @@ namespace GreenMap.Controllers
             foreach (var item in wktList)
                 wktDictionary[item.id] = item.wkt;
             return wktDictionary;
+        }
+
+        public async Task<Dictionary<string, string>> GetFiltracja()
+        {
+            var points = await _context.Odwiert
+                 .Where(item => item.EurefX != null)
+                 .Where(item => item.EurefY != null)
+                 .Where(item => item.NrKlasy != null)
+                 .Select(item => new { item.EurefX, item.EurefY, item.NrKlasy })
+                 .ToListAsync();
+            var wktWithFiltering = new Dictionary<string, string>();
+            foreach (var item in points)
+            {
+                string wkt = new Point(item.EurefY.Value, item.EurefX.Value).ToString();
+                wktWithFiltering[wkt] = item.NrKlasy;
+            }
+            return wktWithFiltering;
         }
     }
 }

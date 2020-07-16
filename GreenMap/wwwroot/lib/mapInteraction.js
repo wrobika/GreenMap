@@ -58,8 +58,7 @@ hydroizohypseInteraction.on('select', function (e) {
     if (e.selected.length === 1) {
         var coordinateString = document.getElementById('mouse-position').textContent;
         var coordinateArray = coordinateString.split(',');
-        console.log(coordinateArray);
-        container.innerHTML = e.selected[0].get('color');
+        container.innerHTML = e.selected[0].get('depth');
         overlay.setPosition(coordinateArray);
     } else {
         overlay.setPosition(undefined);

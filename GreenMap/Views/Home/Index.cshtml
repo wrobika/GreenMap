@@ -18,10 +18,11 @@
     var city = await miastoController.GetGraniceMiasta();
     var hydroizohypse = await hydroizohipsyController.GetHydroizohipsy();
     var drilling = await odwiertController.GetOdwiert();
-    var filter = await zwierciadloController.GetZwierciadloFiltracja();
+    var filter = await odwiertController.GetFiltracja();
     var layersProperties = LayersProperties.Layers;
 }
-<!---span id="status">&nbsp;0 selected features</span-->
+
+<script src="~/lib/colors.js"></script>
 <script src="~/lib/createLayers.js"></script>
 <script src="~/lib/searchFunctions.js"></script>
 <script type="text/javascript">
