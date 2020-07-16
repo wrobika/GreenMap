@@ -27,8 +27,6 @@
 <script type="text/javascript">
 
     var container = document.getElementById('popup');
-    var content = document.getElementById('popup-content');
-    var closer = document.getElementById('popup-closer');
 
     var overlay = new ol.Overlay({
         element: container,
@@ -37,12 +35,6 @@
             duration: 250
         }
     });
-
-    closer.onclick = function() {
-        overlay.setPosition(undefined);
-        closer.blur();
-        return false;
-    };
 
     var layerProperties = @Html.Raw(Json.Serialize(layersProperties));
 

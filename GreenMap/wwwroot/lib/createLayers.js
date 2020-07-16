@@ -69,36 +69,6 @@ function getLayer(layerName) {
     });
 }
 
-function getStyle(feature, layerName) {
-    var layerStroke = null;
-    if (layerName === 'city') {
-        layerStroke = new ol.style.Stroke({
-            color: layerProperties[layerName].stroke,
-            width: 2
-        });
-    }
-
-    var layerFill = new ol.style.Fill({
-        color: rgba(layerName)
-    });
-    if (layerName === 'hydroizohypse') {
-        layerStroke = new ol.style.Stroke({
-            color: feature.get('color'),
-            width: 1
-        });
-    }
-    if (layerName === 'filter') {
-        layerFill = new ol.style.Fill({
-            color: feature.get('color'),
-        });
-    }
-
-    return new ol.style.Style({
-        stroke: layerStroke,
-        fill: layerFill
-    })
-}
-
 function getClusterLayer(layerName) {
     var objectCluster = new ol.source.Cluster({
         distance: 50,
@@ -139,4 +109,53 @@ function getClusterLayer(layerName) {
             return style;
         }
     });
+}
+
+
+function getStyle(feature, layerName) {
+    return new ol.style.Style({
+        stroke: getStroke(feature, layerName),
+        fill: getFill(feature, layerName),
+        text: getText(feature, layerName)
+    })
+}
+
+function getStroke(feature, layerName) {
+    if (layerName === 'city') {
+        return new ol.style.Stroke({
+            color: layerProperties[layerName].stroke,
+            width: 2
+        });
+    }
+    if (layerName === 'hydroizohypse') {
+        return new ol.style.Stroke({
+            color: feature.get('color'),
+            width: 1
+        });
+    }
+    return null;
+}
+
+function getFill(feature, layerName) {
+    if (layerName === 'filter') {
+        return new ol.style.Fill({
+            color: feature.get('color'),
+        });
+    }
+    return new ol.style.Fill({
+        color: rgba(layerName)
+    });
+}
+
+function getText(feature, layerName) {
+    if (layerName === 'filter') {
+        return new ol.style.Text({
+            //text: feature.get('value'),
+            text: '210',
+            fill: new ol.style.Fill({
+                color: 'black'
+            })
+        });
+    }
+    return null;
 }

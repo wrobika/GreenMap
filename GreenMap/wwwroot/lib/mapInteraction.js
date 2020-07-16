@@ -1,10 +1,22 @@
-﻿var drillingLayer;
-var objectLayer;
+﻿var mousePositionControl = new ol.control.MousePosition({
+    //coordinateFormat: ol.coordinate.format([x,y],'[{x},{y}]'),
+    //projection: 'EPSG:4326',
+    // comment the following two lines to have the mouse position
+    // be placed within the map.
+    //className: 'custom-mouse-position',
+    target: document.getElementById('mouse-position'),
+    undefinedHTML: '&nbsp;'
+});
+map.addControl(mousePositionControl);
+
+
+var drillingLayer;
+var hydroizohypseLayer;
 for (var layer of layers) {
     if (layer.get('name') === 'drilling')
         drillingLayer = layer;
-    if (layer.get('name') === 'rbdh')
-        objectLayer = layer;
+    if (layer.get('name') === 'hydroizohypse')
+        hydroizohypseLayer = layer;
 }
 
 var drillingInteraction = new ol.interaction.Select({
@@ -13,14 +25,21 @@ var drillingInteraction = new ol.interaction.Select({
     style: false
 });
 
-var objectInteraction = new ol.interaction.Select({
+var hydroizohypseInteraction = new ol.interaction.Select({
     condition: ol.events.condition.pointerMove,
-    layers: [objectLayer],
-    style: false
+    layers: [hydroizohypseLayer],
+    style: function (feature) {
+        return new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: feature.get('color'),
+                width: 3
+            })
+        })
+    }
 });
 
 map.addInteraction(drillingInteraction);
-//map.addInteraction(objectInteraction);
+map.addInteraction(hydroizohypseInteraction);
 
 drillingInteraction.on('select', function (e) {
     var selectFeatures = drillingInteraction.getFeatures().getArray();
@@ -35,20 +54,15 @@ drillingInteraction.on('select', function (e) {
     }
 });
 
-objectInteraction.on('select', function (e) {
-    var selectFeatures = objectInteraction.getFeatures().getArray();
-    //document.getElementById('status').innerHTML = '&nbsp;' +
-    //    e.target.getFeatures().getLength() +
-    //    ' selected features (last operation selected ' + e.selected.length +
-    //    ' and deselected ' + e.deselected.length + ' features)';
-    if (selectFeatures[0].get('features').length === 1) {
-        var coordinate = selectFeatures[0].getGeometry().getCoordinates();
-        var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
-        content.innerHTML = '<p>You clicked here:</p><code>' + hdms +'</code>';
-        overlay.setPosition(coordinate);
+hydroizohypseInteraction.on('select', function (e) {
+    if (e.selected.length === 1) {
+        var coordinateString = document.getElementById('mouse-position').textContent;
+        var coordinateArray = coordinateString.split(',');
+        console.log(coordinateArray);
+        container.innerHTML = e.selected[0].get('color');
+        overlay.setPosition(coordinateArray);
     } else {
         overlay.setPosition(undefined);
-        closer.blur();
         return false;
     }
 });

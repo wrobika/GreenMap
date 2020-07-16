@@ -1,4 +1,4 @@
-﻿@{ 
+﻿@{
     var layerProperties = LayersProperties.Layers;
     var epionierDbContext = new epionierContext();
     var dzielniceController = new GreenMap.Controllers.DzielniceController(epionierDbContext);
@@ -12,8 +12,8 @@
         { "filteringClassList", filteringClassList}
     };
 }
-    
 
+<div id="mouse-position" style="display:none;"></div>
 <div id="map" class="map">
     <nav class="navbar navbar-light bg-white">
         <form class="form-inline ml-auto">
@@ -29,7 +29,7 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                     @foreach (var name in layerProperties.Keys)
-                    { 
+                    {
                         <button id="button_@name" value="@name" type="button" class="dropdown-item">
                             <span><img id="eye_@name" style="width:20px;opacity:1" /></span>
                             @layerProperties[name].FullName
@@ -46,7 +46,4 @@
         }
     </nav>
 </div>
-<div id="popup" class="ol-popup">
-    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-    <div id="popup-content"></div>
-</div>
+<div id="popup" class="ol-popup"></div>
