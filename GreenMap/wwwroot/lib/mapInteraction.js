@@ -1,14 +1,18 @@
-﻿var mousePositionControl = new ol.control.MousePosition({
-    //coordinateFormat: ol.coordinate.format([x,y],'[{x},{y}]'),
-    //projection: 'EPSG:4326',
-    // comment the following two lines to have the mouse position
-    // be placed within the map.
-    //className: 'custom-mouse-position',
+﻿var popup = document.getElementById('popup');
+var overlay = new ol.Overlay({
+    element: popup,
+    autoPan: true,
+    autoPanAnimation: {
+        duration: 250
+    }
+});
+map.addOverlay(overlay);
+
+var mousePositionControl = new ol.control.MousePosition({
     target: document.getElementById('mouse-position'),
     undefinedHTML: '&nbsp;'
 });
 map.addControl(mousePositionControl);
-
 
 var drillingLayer;
 var hydroizohypseLayer;
@@ -58,7 +62,7 @@ hydroizohypseInteraction.on('select', function (e) {
     if (e.selected.length === 1) {
         var coordinateString = document.getElementById('mouse-position').textContent;
         var coordinateArray = coordinateString.split(',');
-        container.innerHTML = e.selected[0].get('depth');
+        popup.innerHTML = e.selected[0].get('depth');
         overlay.setPosition(coordinateArray);
     } else {
         overlay.setPosition(undefined);

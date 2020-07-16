@@ -27,16 +27,6 @@
 <script src="~/lib/searchFunctions.js"></script>
 <script type="text/javascript">
 
-    var container = document.getElementById('popup');
-
-    var overlay = new ol.Overlay({
-        element: container,
-        autoPan: true,
-        autoPanAnimation: {
-            duration: 250
-        }
-    });
-
     var layerProperties = @Html.Raw(Json.Serialize(layersProperties));
 
     var layerObjects = {
@@ -70,7 +60,6 @@
     var map = new ol.Map({
         layers: layers,
         target: 'map',
-        overlays: [overlay],
         view: new ol.View({
             center: ol.proj.fromLonLat([19.978618, 50.060601]),
             zoom: 12

@@ -9,9 +9,8 @@
 function getDepthColor(maxDepth, minDepth, actualDepth) {
     var range = maxDepth - minDepth;
     var value = actualDepth - minDepth;
-    var green = (255 * value) / range;
-    var blue = 255 - green;
-    return "rgb(0," + green + "," + blue + ")";
+    var blue = 255 - (255 * value) / range;
+    return "rgb(0,0," + blue + ")";
 }
 
 function getFilteringColor(filteringClass) {
