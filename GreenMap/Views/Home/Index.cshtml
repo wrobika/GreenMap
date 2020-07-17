@@ -28,10 +28,11 @@
 <script type="text/javascript">
 
     var layerProperties = @Html.Raw(Json.Serialize(layersProperties));
-
+    const WMS = 'WMS';
     var layerObjects = {
         'city': @Html.Raw(Json.Serialize(city)),
         'district': @Html.Raw(Json.Serialize(districts)),
+        'soli': WMS,
         'greenery': @Html.Raw(Json.Serialize(greenery)),
         'hydro': @Html.Raw(Json.Serialize(hydro)),
         'hydroizohypse': @Html.Raw(Json.Serialize(hydroizohypse)),
@@ -45,13 +46,13 @@
         source: new ol.source.OSM()
     });
 
-    var wms = new ol.layer.Tile({
-        name: 'wms',
-        source: new ol.source.TileWMS({
-            url: 'https://ahocevar.com/geoserver/wms',
-            params: { 'LAYERS': 'topp:states', 'TILED': true },
-        })
-    });
+    //var wms = new ol.layer.Image({
+    //    name: 'wms',
+    //    source: new ol.source.ImageWMS({
+    //        url: 'http://40.69.47.110//geoserver/wms',
+    //        params: { 'LAYERS': 'gleby:gleby_Biezanow_Prokocim,gleby:gleby_Bieñczyce,gleby:gleby_Czyżyny,gleby:gleby_NHuta,gleby:gleby_Podgorze' },
+    //    })
+    //});
 
     var layers = [background];
     var layerNames = Object.keys(layerObjects);
