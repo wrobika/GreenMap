@@ -29,12 +29,13 @@ namespace GreenMap
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(
+                    Configuration.GetConnectionString("DefaultConnection"),
+                    option => option.SetPostgresVersion(new Version(9, 5))));
             services.AddDbContext<epionierContext>(options =>
                 options.UseNpgsql(
                     Configuration.GetConnectionString("EpionierContext"),
-                    x => x.UseNetTopologySuite()));
+                    option => option.UseNetTopologySuite()));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
