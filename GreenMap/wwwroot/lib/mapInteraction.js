@@ -1,4 +1,5 @@
 ﻿var popup = document.getElementById('popup');
+
 var overlay = new ol.Overlay({
     element: popup,
     autoPan: true,
@@ -16,11 +17,14 @@ map.addControl(mousePositionControl);
 
 var drillingLayer;
 var hydroizohypseLayer;
+//var soilLayer;
 for (var layer of layers) {
     if (layer.get('name') === 'drilling')
         drillingLayer = layer;
     if (layer.get('name') === 'hydroizohypse')
         hydroizohypseLayer = layer;
+    //if (layer.get('name') === 'soil')
+    //    soilLayer = layer;
 }
 
 var drillingInteraction = new ol.interaction.Select({
@@ -41,9 +45,15 @@ var hydroizohypseInteraction = new ol.interaction.Select({
         })
     }
 });
+var soilInteraction = new ol.interaction.Select({
+    condition: ol.events.condition.click,
+    //layers: [soilLayer],
+    style: false
+});
 
 map.addInteraction(drillingInteraction);
 map.addInteraction(hydroizohypseInteraction);
+//map.addInteraction(soilInteraction);
 
 drillingInteraction.on('select', function (e) {
     var selectFeatures = drillingInteraction.getFeatures().getArray();
@@ -69,6 +79,11 @@ hydroizohypseInteraction.on('select', function (e) {
         return false;
     }
 });
+
+//soilInteraction.on('select', function (e) {
+//    if (soilLayer.get('visible'))
+//        document.getElementById('soilLegend').click();
+//});
 
 function fillInfoModal(point) {
     document.getElementById('info').click();

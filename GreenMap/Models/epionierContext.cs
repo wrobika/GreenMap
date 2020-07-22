@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 
 namespace GreenMap.Models
 {
-    //Scaffold-DbContext epionierConnectionString Npgsql.EntityFrameworkCore.PostgreSQL -OutputDir Models -Force
     public partial class epionierContext : DbContext
     {
         public epionierContext()
@@ -22,7 +21,10 @@ namespace GreenMap.Models
         public virtual DbSet<GraniceMiasta> GraniceMiasta { get; set; }
         public virtual DbSet<Hydro> Hydro { get; set; }
         public virtual DbSet<Hydroizohipsy> Hydroizohipsy { get; set; }
+        public virtual DbSet<Monitoring> Monitoring { get; set; }
         public virtual DbSet<Odwiert> Odwiert { get; set; }
+        public virtual DbSet<SkladChemicznyWodPodziemnych> SkladChemicznyWodPodziemnych { get; set; }
+        public virtual DbSet<ZanieczyszczenieGleb> ZanieczyszczenieGleb { get; set; }
         public virtual DbSet<Zielen> Zielen { get; set; }
         public virtual DbSet<ZwierciadloGl> ZwierciadloGl { get; set; }
 
@@ -31,7 +33,7 @@ namespace GreenMap.Models
             if (!optionsBuilder.IsConfigured)
             {
                 var configuration = new ConfigurationBuilder().
-                   AddJsonFile(@"C:\Users\wnaziemiec\AppData\Roaming\Microsoft\UserSecrets\aspnet-GreenMap-F8C496C6-DBED-4523-A5C8-A991D3B79B61\secrets.json", optional: false).Build();
+                    AddJsonFile(@"C:\Users\wnaziemiec\AppData\Roaming\Microsoft\UserSecrets\aspnet-GreenMap-F8C496C6-DBED-4523-A5C8-A991D3B79B61\secrets.json", optional: false).Build();
                 var connectionString = configuration.GetConnectionString("EpionierContext");
                 optionsBuilder.UseNpgsql(connectionString, x => x.UseNetTopologySuite());
             }
@@ -256,6 +258,33 @@ namespace GreenMap.Models
                 entity.Property(e => e.ZwWody).HasColumnName("zw_wody");
             });
 
+            modelBuilder.Entity<Monitoring>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("monitoring");
+
+                entity.HasIndex(e => e.Geom)
+                    .HasName("monitoring_geom_1595266273175")
+                    .HasMethod("gist");
+
+                entity.Property(e => e.Geom)
+                    .HasColumnName("geom")
+                    .HasColumnType("geometry(Point,2180)");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Nazwa)
+                    .HasColumnName("nazwa")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.Objectid).HasColumnName("objectid");
+
+                entity.Property(e => e.X).HasColumnName("x");
+
+                entity.Property(e => e.Y).HasColumnName("y");
+            });
+
             modelBuilder.Entity<Odwiert>(entity =>
             {
                 entity.HasNoKey();
@@ -303,6 +332,122 @@ namespace GreenMap.Models
                 entity.Property(e => e.WspFiltracji)
                     .HasColumnName("wsp_filtracji")
                     .HasColumnType("numeric(31,15)");
+            });
+
+            modelBuilder.Entity<SkladChemicznyWodPodziemnych>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("sklad_chemiczny_wod_podziemnych");
+
+                entity.HasIndex(e => e.Geom)
+                    .HasName("sklad_chemiczny_wod_podziemnych_geom_1595266273190")
+                    .HasMethod("gist");
+
+                entity.Property(e => e.DataBadania)
+                    .HasColumnName("data_badania")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Geom)
+                    .HasColumnName("geom")
+                    .HasColumnType("geometry(Point,2180)");
+
+                entity.Property(e => e.K).HasColumnName("k");
+
+                entity.Property(e => e.KlasaJakosci)
+                    .HasColumnName("klasa_jakosci")
+                    .HasMaxLength(3);
+
+                entity.Property(e => e.L).HasColumnName("l");
+
+                entity.Property(e => e.M).HasColumnName("m");
+
+                entity.Property(e => e.Pew)
+                    .HasColumnName("pew")
+                    .HasColumnType("numeric(5,3)");
+
+                entity.Property(e => e.Ph)
+                    .HasColumnName("ph")
+                    .HasColumnType("numeric(4,1)");
+
+                entity.Property(e => e.PrzydatnoscDoNawadniania)
+                    .HasColumnName("przydatnosc_do_nawadniania")
+                    .HasMaxLength(6);
+
+                entity.Property(e => e.RzednaTerenu)
+                    .HasColumnName("rzedna_terenu")
+                    .HasColumnType("numeric(5,1)");
+
+                entity.Property(e => e.Sar)
+                    .HasColumnName("sar")
+                    .HasColumnType("numeric(4,2)");
+
+                entity.Property(e => e.SymbolPunktu)
+                    .HasColumnName("symbol_punktu")
+                    .HasMaxLength(4);
+
+                entity.Property(e => e.X).HasColumnName("x");
+
+                entity.Property(e => e.Y).HasColumnName("y");
+            });
+
+            modelBuilder.Entity<ZanieczyszczenieGleb>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("zanieczyszczenie_gleb");
+
+                entity.HasIndex(e => e.Geom)
+                    .HasName("zanieczyszczenie_gleb_geom_1595266273188")
+                    .HasMethod("gist");
+
+                entity.Property(e => e.DataOprobowania)
+                    .HasColumnName("data_oprobowania")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Geom)
+                    .HasColumnName("geom")
+                    .HasColumnType("geometry(PointZ,2180)");
+
+                entity.Property(e => e.GrupaGruntow)
+                    .HasColumnName("grupa_gruntow")
+                    .HasMaxLength(2);
+
+                entity.Property(e => e.Lp).HasColumnName("lp");
+
+                entity.Property(e => e.SubstancjeStwarzajaceRyzyko0025)
+                    .HasColumnName("substancje_stwarzajace_ryzyko_0_025")
+                    .HasMaxLength(49);
+
+                entity.Property(e => e.SubstancjeStwarzajaceRyzyko025100)
+                    .HasColumnName("substancje_stwarzajace_ryzyko_025_100")
+                    .HasMaxLength(5);
+
+                entity.Property(e => e.SubstancjeStwarzajaceRyzyko100)
+                    .HasColumnName("substancje_stwarzajace_ryzyko_100")
+                    .HasMaxLength(5);
+
+                entity.Property(e => e.Symbol)
+                    .HasColumnName("symbol")
+                    .HasMaxLength(4);
+
+                entity.Property(e => e.X).HasColumnName("x");
+
+                entity.Property(e => e.Y).HasColumnName("y");
+
+                entity.Property(e => e.Z).HasColumnName("z");
+
+                entity.Property(e => e.ZanieczyszczenieGleby0025)
+                    .HasColumnName("zanieczyszczenie_gleby_0_025")
+                    .HasMaxLength(4);
+
+                entity.Property(e => e.ZanieczyszczenieGruntu025100)
+                    .HasColumnName("zanieczyszczenie_gruntu_025_100")
+                    .HasMaxLength(4);
+
+                entity.Property(e => e.ZanieczyszczenieGruntu100)
+                    .HasColumnName("zanieczyszczenie_gruntu_100")
+                    .HasMaxLength(4);
             });
 
             modelBuilder.Entity<Zielen>(entity =>
@@ -450,15 +595,9 @@ namespace GreenMap.Models
                     .HasColumnType("numeric(31,15)");
             });
 
-            modelBuilder.Entity<OdwiertSearch>(entity =>
-            {
-                entity.HasNoKey();
-            });
-
             OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-        public DbSet<GreenMap.Models.OdwiertSearch> OdwiertSearch { get; set; }
     }
 }

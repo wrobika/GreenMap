@@ -17,23 +17,29 @@
 <div id="map" class="map">
     <nav class="navbar navbar-light bg-white">
         <form class="form-inline ml-auto">
-            <button style="display:none;" id="info" type="button" class="btn btn-success m-1" data-toggle="modal" data-target="#infoModal">
-                Info
-            </button>
+            <button style="display:none;" id="info" type="button" class="btn btn-success m-1" data-toggle="modal" data-target="#infoModal"></button>
             <button type="button" class="btn btn-success m-1" data-toggle="modal" data-target="#searchModal">
                 Wyszukaj
             </button>
             <div class="dropdown">
-                <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-success dropdown-toggle m-1" type="button" id="legendDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Legendy
+                </button>
+                <div class="dropdown-menu" aria-labelledby="legendDropdown">
+                    <button id="soilLegend" type="button" class="dropdown-item" data-toggle="modal" data-target="#soilLegendModal">gleby</button>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-success dropdown-toggle m-1" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Widoczność warstw
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                     @foreach (var name in layerProperties.Keys)
                     {
-                        <button id="button_@name" value="@name" type="button" class="dropdown-item">
-                            <span><img id="eye_@name" style="width:20px;opacity:1" /></span>
-                            @layerProperties[name].FullName
-                        </button>
+                    <button id="button_@name" value="@name" type="button" class="dropdown-item">
+                        <span><img id="eye_@name" style="width:20px;opacity:1" /></span>
+                        @layerProperties[name].FullName
+                    </button>
                     }
                 </div>
             </div>
@@ -43,6 +49,9 @@
         }
         @{
             await Html.RenderPartialAsync("_InfoModal", new OdwiertInfo());
+        }
+        @{
+            await Html.RenderPartialAsync("_SoilLegendModal");
         }
     </nav>
 </div>
