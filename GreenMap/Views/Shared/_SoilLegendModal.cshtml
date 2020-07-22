@@ -8,30 +8,59 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div>
-                    <table class="table">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
+                                <th scope="col">Numer klasy</th>
+                                <th scope="col">Nazwa klasy przepuszczalności</th>
+                                <th scope="col">Wartości graniczne współczynnika filtracji k [m/s]</th>
+                                <th scope="col">Typowe gleby lub grunty</th>
+                                <th scope="col">Kolor i numer na mapie</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
+                                <th scope="row">klasa A</th>
+                                <td>Bardzo dobra</td>
+                                <td>powyżej 1×10<sup>-3</sup></td>
+                                <td>rumosze skalne, piargi, żwiry i pospółki, piaski gruboziarniste</td>
+                                <td rowspan="2">niebieski, ciemnoniebieski (14 – 15)</td>
                             </tr>
                             <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
+                                <th scope="row">klasa B</th>
+                                <td>Dobra</td>
+                                <td>1×10<sup>-4</sup> - 1×10<sup>-3</sup></td>
+                                <td>piaski różnoziarniste i średnioziarniste, skały masywne z gęstą siecią spękań</td>
+                                <td></td>
                             </tr>
                             <tr>
-                                <th scope="row">3</th>
-                                <td>Larry</td>
-                                <td>the Bird</td>
+                                <th scope="row">klasa C</th>
+                                <td>Średnia</td>
+                                <td>1×10<sup>-5</sup> - 1×10<sup>-4</sup></td>
+                                <td>piaski drobnoziarniste, mady na podłożu piaszczystym, lessy, piaski słabo gliniaste (wykształcone na gruntach piaszczystych), gleby i grunty organiczne</td>
+                                <td>zielony (13), odcienie brązu (5 – 10), żółty (4)</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">klasa D</th>
+                                <td>Słaba</td>
+                                <td>1×10<sup>-6</sup> - 1×10<sup>-5</sup></td>
+                                <td>piaski pylaste, piaski gliniaste lekkie i mocne, mułki, mady na podłożu lessowym i pylastym oraz rędziny w dolinach i zagłębieniach</td>
+                                <td>blado-różowy (1)</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">klasa E</th>
+                                <td>Bardzo słaba (utwory półprzepuszczalne)</td>
+                                <td>1×10<sup>-8</sup> - 1×10<sup>-6</sup></td>
+                                <td>gliny lekkie i średnie, pyły zwykłe i ilaste, lessy ilaste, namuły, mułowce, iły piaszczyste</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">klasa F</th>
+                                <td>Praktycznie zerowa (utwory praktycznie nieprzepuszczalne)</td>
+                                <td>poniżej 1×10<sup>-8</sup></td>
+                                <td>gliny ciężkie, iły ciężkie, iły pylaste itp. oraz mady na glinach ciężkich oraz marglach</td>
+                                <td>-</td>
                             </tr>
                         </tbody>
                     </table>
