@@ -31,16 +31,9 @@ namespace GreenMap.Controllers
             var wktWithPdfName = await _context.Monitoring
                 .Where(item => item.X != null)
                 .Where(item => item.Y != null)
-                .ToDictionaryAsync(item => new Point(item.X.Value, item.Y.Value).ToString(),
+                .ToDictionaryAsync(item => new Point(item.X.Value, item.Y.Value).ToText(),
                     item => item.Nazwa);
             return wktWithPdfName;
-
-            //var wktWithPdfName = await _context.ZanieczyszczenieGleb
-            //    .Where(item => item.X != null)
-            //    .Where(item => item.Y != null)
-            //    .ToDictionaryAsync(item => new Point(item.Y.Value, item.X.Value).ToString(),
-            //        item => item.Symbol);
-            //return wktWithPdfName;
         }
 
         [HttpGet("{name}")]

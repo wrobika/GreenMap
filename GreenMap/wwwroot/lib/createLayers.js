@@ -14,12 +14,13 @@ function getLayer(layerName) {
 }
 
 function getWMSLayer(layerName) {
+    var properties = layerProperties[layerName]
     return new ol.layer.Image({
         name: layerName,
-        visible: layerProperties[layerName].visible,
+        visible: properties.visible,
         source: new ol.source.ImageWMS({
-            url: layerProperties[layerName].urlWMS,
-            params: { 'LAYERS': layerProperties[layerName].layersWMS },
+            url: properties.urlWMS,
+            params: { 'LAYERS': properties.layersWMS },
         })
     });
 }
@@ -66,6 +67,7 @@ function getFeatures(layerName) {
         case 'hydroizohypse': return getHydroizohypseFeatures(objects);
         case 'drilling': return getDrillingFeatures(objects, layerName);
         case 'monitoring': return getMonitoringFeatures(objects, layerName);
+        case 'soilPollution': return getDrillingFeatures(objects, layerName);
         default: return getSimpleFeatures(objects, layerName);
     }
 }
@@ -141,7 +143,7 @@ function getMonitoringFeatures(objects, layerName) {
 function getStyle(feature, layerName) {
     return new ol.style.Style({
         stroke: getStroke(feature, layerName),
-        fill: getFill(layerName),
+        fill: getFill(false, feature, layerName),
         text: getText(feature, layerName)
     })
 }
@@ -157,12 +159,7 @@ function getClusterStyle(feature, layerName) {
 function getSinglePointStyle(feature, layerName) {
     var singleFeature = feature.get('features')[0];
     return new ol.style.Style({
-        image: new ol.style.Circle({
-            radius: layerProperties[layerName].radius,
-            fill: new ol.style.Fill({
-                color: singleFeature.get('color')
-            })
-        }),
+        image: getImage(feature, layerName),
         text: getText(singleFeature, layerName)
     })
 }
@@ -170,16 +167,32 @@ function getSinglePointStyle(feature, layerName) {
 function getMultiPointStyle(feature, layerName) {
     var size = feature.get('features').length;
     return new ol.style.Style({
-        image: new ol.style.Circle({
-            radius: layerProperties[layerName].radius,
-            fill: getFill(layerName)
-        }),
+        image: getImage(feature, layerName),
         text: new ol.style.Text({
             text: size.toString(),
             fill: new ol.style.Fill({
                 color: layerProperties[layerName].text
             })
         })
+    });
+}
+
+function getImage(feature, layerName) {
+    var properties = layerProperties[layerName];
+    var size = feature.get('features').length;
+    var radius = properties.radius;
+    var fill = getFill(true, feature, layerName);
+
+    if (properties.iconShapePoints !== 0) {
+        return new ol.style.RegularShape({
+            points: properties.iconShapePoints,
+            radius: radius,
+            fill: fill
+        });
+    }
+    return new ol.style.Circle({
+        radius: radius,
+        fill: fill
     });
 }
 
@@ -199,7 +212,13 @@ function getStroke(feature, layerName) {
     return null;
 }
 
-function getFill(layerName) {
+function getFill(cluster, feature, layerName) {
+    if (cluster && feature.get('features').length === 1) {
+        var singleFeature = feature.get('features')[0];
+        return new ol.style.Fill({
+            color: singleFeature.get('color')
+        })
+    }
     return new ol.style.Fill({
         color: rgba(layerName)
     });

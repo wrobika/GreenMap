@@ -12,7 +12,8 @@
     var odwiertController = new GreenMap.Controllers.OdwiertController(epionierDbContext, environment);
     var zwierciadloController = new GreenMap.Controllers.ZwierciadloGlController(epionierDbContext);
     var hydroizohipsyController = new GreenMap.Controllers.HydroizohipsyController(epionierDbContext);
-    var monitoringController = new GreenMap.Controllers.MonitoringController(epionierDbContext, environment); 
+    var monitoringController = new GreenMap.Controllers.MonitoringController(epionierDbContext, environment);
+    var zanieczyszczenieGlebController = new GreenMap.Controllers.ZanieczyszczenieGlebController(epionierDbContext);
 
     var greenery = await zielenController.GetZielen();
     var objects = await cbdhController.GetCbdhObj();
@@ -23,6 +24,8 @@
     var drilling = await odwiertController.GetOdwiert();
     var filter = await odwiertController.GetFiltracja();
     var monitoring = await monitoringController.GetMonitoring();
+    var soilPollution = await zanieczyszczenieGlebController.GetZanieczyszczenieGleb();
+
     var layersProperties = LayersProperties.Layers;
 }
 
@@ -36,13 +39,15 @@
     var layerObjects = {
         'city': @Html.Raw(Json.Serialize(city)),
         'district': @Html.Raw(Json.Serialize(districts)),
+        'NMT': WMS,
         'soil': WMS,
         'greenery': @Html.Raw(Json.Serialize(greenery)),
         'hydro': @Html.Raw(Json.Serialize(hydro)),
         'hydroizohypse': @Html.Raw(Json.Serialize(hydroizohypse)),
-        'filter': @Html.Raw(Json.Serialize(filter)),
         'rbdh': @Html.Raw(Json.Serialize(objects)),
+        'filter': @Html.Raw(Json.Serialize(filter)),
         'monitoring': @Html.Raw(Json.Serialize(monitoring)),
+        'soilPollution': @Html.Raw(Json.Serialize(soilPollution)),
         'drilling': @Html.Raw(Json.Serialize(drilling)),
     };
 
