@@ -99,9 +99,10 @@ function fillInfoModal(point) {
     document.getElementById('infoDepth').innerText = point.glebokoscZwierciadla;
     document.getElementById('infoFilterClass').innerText = point.klasaFiltracji;
     document.getElementById('infoFilter').innerText = point.filtracja;
-    document.getElementById('infoHydro').innerText = point.hydroGleby;
-    document.getElementById('infoImpurity').innerText = point.zanieczyszczenieGleby;
-    document.getElementById('infoQuality').innerText = point.jakoscWody;
-    document.getElementById('infIrrigation').innerText = point.nawodnienie;
-    document.getElementById('infoProfile').innerText = point.profil;
+    //document.getElementById('infoHydro').innerText = point.hydroGleby;
+    //document.getElementById('infoImpurity').innerText = point.zanieczyszczenieGleby;
+    //document.getElementById('infoQuality').innerText = point.jakoscWody;
+    //document.getElementById('infIrrigation').innerText = point.nawodnienie;
+    //document.getElementById('infoProfile').innerText = point.profil;
+    document.getElementById('infoPdf').setAttribute('href', '/api/Odwiert/OpenProfilePdf/' + point.nrRbdh);
 }

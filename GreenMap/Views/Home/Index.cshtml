@@ -9,7 +9,7 @@
     var hydroController = new GreenMap.Controllers.HydroController(epionierDbContext);
     var dzielniceController = new GreenMap.Controllers.DzielniceController(epionierDbContext);
     var miastoController = new GreenMap.Controllers.GraniceMiastaController(epionierDbContext);
-    var odwiertController = new GreenMap.Controllers.OdwiertController(epionierDbContext);
+    var odwiertController = new GreenMap.Controllers.OdwiertController(epionierDbContext, environment);
     var zwierciadloController = new GreenMap.Controllers.ZwierciadloGlController(epionierDbContext);
     var hydroizohipsyController = new GreenMap.Controllers.HydroizohipsyController(epionierDbContext);
     var monitoringController = new GreenMap.Controllers.MonitoringController(epionierDbContext, environment); 

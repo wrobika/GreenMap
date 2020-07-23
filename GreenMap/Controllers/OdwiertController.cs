@@ -10,6 +10,7 @@ using NetTopologySuite.Geometries;
 using GreenMap.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 
 namespace GreenMap.Controllers
 {
@@ -21,12 +22,14 @@ namespace GreenMap.Controllers
         private readonly epionierContext _context;
         private readonly DzielniceController _dzielniceController;
         private readonly ZwierciadloGlController _zwierciadloController;
+        private readonly IWebHostEnvironment _environment;
 
-        public OdwiertController(epionierContext context)
+        public OdwiertController(epionierContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
             _dzielniceController = new DzielniceController(_context);
             _zwierciadloController = new ZwierciadloGlController(_context);
+            _environment = hostEnvironment;
         }
 
         // GET: api/Odwiert
@@ -64,6 +67,13 @@ namespace GreenMap.Controllers
                 KlasaFiltracji = odwiert.NazwaKlasy
             };
             return info;
+        }
+
+        [HttpGet("{action}/{nrRbdh}")]
+        public IActionResult OpenProfilePdf(int nrRbdh)
+        {
+            string path = _environment.WebRootPath + "/profileOtworow/" + nrRbdh + ".pdf";
+            return new PhysicalFileResult(path, "application/pdf");
         }
 
         public async Task<SelectList> GetStatusSelectList()
