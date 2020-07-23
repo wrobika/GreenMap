@@ -15,6 +15,7 @@ namespace GreenMap.Models
         public string Text { get; set; }
         public bool Cluster { get; set; }
         public int Radius { get; set; }
+        public int IconShapePoints { get; set; }
         public string UrlWMS { get; set; }
         public string LayersWMS { get; set; }
     }
