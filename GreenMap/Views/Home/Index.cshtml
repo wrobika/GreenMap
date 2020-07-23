@@ -1,4 +1,6 @@
 ﻿@{
+    @using Microsoft.AspNetCore.Hosting;
+    @inject IWebHostEnvironment environment;
     ViewData["Title"] = "Home Page";
     await Html.RenderPartialAsync("_NavigationBar");
     var epionierDbContext = new epionierContext();
@@ -10,6 +12,7 @@
     var odwiertController = new GreenMap.Controllers.OdwiertController(epionierDbContext);
     var zwierciadloController = new GreenMap.Controllers.ZwierciadloGlController(epionierDbContext);
     var hydroizohipsyController = new GreenMap.Controllers.HydroizohipsyController(epionierDbContext);
+    var monitoringController = new GreenMap.Controllers.MonitoringController(epionierDbContext, environment); 
 
     var greenery = await zielenController.GetZielen();
     var objects = await cbdhController.GetCbdhObj();
@@ -19,6 +22,7 @@
     var hydroizohypse = await hydroizohipsyController.GetHydroizohipsy();
     var drilling = await odwiertController.GetOdwiert();
     var filter = await odwiertController.GetFiltracja();
+    var monitoring = await monitoringController.GetMonitoring();
     var layersProperties = LayersProperties.Layers;
 }
 
@@ -38,6 +42,7 @@
         'hydroizohypse': @Html.Raw(Json.Serialize(hydroizohypse)),
         'filter': @Html.Raw(Json.Serialize(filter)),
         'rbdh': @Html.Raw(Json.Serialize(objects)),
+        'monitoring': @Html.Raw(Json.Serialize(monitoring)),
         'drilling': @Html.Raw(Json.Serialize(drilling)),
     };
 
