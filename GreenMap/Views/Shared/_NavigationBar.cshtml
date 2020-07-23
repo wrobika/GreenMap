@@ -1,8 +1,10 @@
 ﻿@{
+    @using Microsoft.AspNetCore.Hosting;
+    @inject IWebHostEnvironment environment;
     var layerProperties = LayersProperties.Layers;
     var epionierDbContext = new epionierContext();
     var dzielniceController = new GreenMap.Controllers.DzielniceController(epionierDbContext);
-    var odwiertController = new GreenMap.Controllers.OdwiertController(epionierDbContext);
+    var odwiertController = new GreenMap.Controllers.OdwiertController(epionierDbContext, environment);
     SelectList districtList = await dzielniceController.GetSelectList();
     SelectList statusList = await odwiertController.GetStatusSelectList();
     SelectList filteringClassList = await odwiertController.GetFilterClassSelectList();

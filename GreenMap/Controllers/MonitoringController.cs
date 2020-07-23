@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace GreenMap.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class MonitoringController : ControllerBase
@@ -24,9 +25,8 @@ namespace GreenMap.Controllers
         }
 
         // GET: api/Monitoring
-        [Route("api/Monitoring")]
         [HttpGet]
-        public async Task<Dictionary<string,string>> GetMonitoring()
+        public async Task<Dictionary<string, string>> GetMonitoring()
         {
             var wktWithPdfName = await _context.Monitoring
                 .Where(item => item.X != null)
@@ -43,8 +43,7 @@ namespace GreenMap.Controllers
             //return wktWithPdfName;
         }
 
-        [HttpGet]
-        [Route("api/Monitoring/OpenPdf/{name}")]
+        [HttpGet("{name}")]
         public IActionResult OpenPdf(string name)
         {
             string path = _env.WebRootPath + "/monitoringPdf/" + name + ".pdf";
