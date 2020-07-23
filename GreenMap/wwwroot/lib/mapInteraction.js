@@ -17,14 +17,14 @@ map.addControl(mousePositionControl);
 
 var drillingLayer;
 var hydroizohypseLayer;
-//var soilLayer;
+var monitoringLayer;
 for (var layer of layers) {
     if (layer.get('name') === 'drilling')
         drillingLayer = layer;
     if (layer.get('name') === 'hydroizohypse')
         hydroizohypseLayer = layer;
-    //if (layer.get('name') === 'soil')
-    //    soilLayer = layer;
+    if (layer.get('name') === 'monitoring')
+        monitoringLayer = layer;
 }
 
 var drillingInteraction = new ol.interaction.Select({
@@ -45,15 +45,15 @@ var hydroizohypseInteraction = new ol.interaction.Select({
         })
     }
 });
-var soilInteraction = new ol.interaction.Select({
+var monitoringInteraction = new ol.interaction.Select({
     condition: ol.events.condition.click,
-    //layers: [soilLayer],
+    layers: [monitoringLayer],
     style: false
 });
 
 map.addInteraction(drillingInteraction);
 map.addInteraction(hydroizohypseInteraction);
-//map.addInteraction(soilInteraction);
+map.addInteraction(monitoringInteraction);
 
 drillingInteraction.on('select', function (e) {
     var selectFeatures = drillingInteraction.getFeatures().getArray();
@@ -80,10 +80,14 @@ hydroizohypseInteraction.on('select', function (e) {
     }
 });
 
-//soilInteraction.on('select', function (e) {
-//    if (soilLayer.get('visible'))
-//        document.getElementById('soilLegend').click();
-//});
+monitoringInteraction.on('select', function (e) {
+    var selectFeatures = monitoringInteraction.getFeatures().getArray();
+    if (selectFeatures[0].get('features').length === 1) {
+        const pdfName = selectFeatures[0].get('features')[0].get('pdfName');
+        window.open("api/Monitoring/OpenPdf/" + pdfName);
+    }
+
+});
 
 function fillInfoModal(point) {
     document.getElementById('info').click();

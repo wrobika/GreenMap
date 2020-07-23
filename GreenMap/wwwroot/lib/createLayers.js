@@ -65,6 +65,7 @@ function getFeatures(layerName) {
         case 'filter': return getFilterFeatures(objects);
         case 'hydroizohypse': return getHydroizohypseFeatures(objects);
         case 'drilling': return getDrillingFeatures(objects, layerName);
+        case 'monitoring': return getMonitoringFeatures(objects, layerName);
         default: return getSimpleFeatures(objects, layerName);
     }
 }
@@ -125,10 +126,22 @@ function getDrillingFeatures(objects, layerName) {
     return featuresArray;
 }
 
+function getMonitoringFeatures(objects, layerName) {
+    var featuresArray = [];
+    for (var wkt of Object.keys(objects)) {
+        var feature = wktReader.readFeature(wkt);
+        feature.getGeometry().transform('EPSG:2178', 'EPSG:3857');
+        feature.set('color', layerProperties[layerName].color);
+        feature.set('pdfName', objects[wkt]);
+        featuresArray.push(feature);
+    }
+    return featuresArray;
+}
+
 function getStyle(feature, layerName) {
     return new ol.style.Style({
         stroke: getStroke(feature, layerName),
-        fill: getFill(feature, layerName),
+        fill: getFill(layerName),
         text: getText(feature, layerName)
     })
 }
@@ -159,7 +172,7 @@ function getMultiPointStyle(feature, layerName) {
     return new ol.style.Style({
         image: new ol.style.Circle({
             radius: layerProperties[layerName].radius,
-            fill: getFill(feature, layerName)
+            fill: getFill(layerName)
         }),
         text: new ol.style.Text({
             text: size.toString(),
@@ -186,12 +199,7 @@ function getStroke(feature, layerName) {
     return null;
 }
 
-function getFill(feature, layerName) {
-    if (layerName === 'filter') {
-        return new ol.style.Fill({
-            color: feature.get('color'),
-        });
-    }
+function getFill(layerName) {
     return new ol.style.Fill({
         color: rgba(layerName)
     });
