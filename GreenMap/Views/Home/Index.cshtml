@@ -1,19 +1,21 @@
 ﻿@{
+    @using GreenMap.Controllers;
     @using Microsoft.AspNetCore.Hosting;
     @inject IWebHostEnvironment environment;
     ViewData["Title"] = "Home Page";
     await Html.RenderPartialAsync("_NavigationBar");
     var epionierDbContext = new epionierContext();
-    var zielenController = new GreenMap.Controllers.ZielenController(epionierDbContext);
-    var cbdhController = new GreenMap.Controllers.CbdhObjController(epionierDbContext);
-    var hydroController = new GreenMap.Controllers.HydroController(epionierDbContext);
-    var dzielniceController = new GreenMap.Controllers.DzielniceController(epionierDbContext);
-    var miastoController = new GreenMap.Controllers.GraniceMiastaController(epionierDbContext);
-    var odwiertController = new GreenMap.Controllers.OdwiertController(epionierDbContext, environment);
-    var zwierciadloController = new GreenMap.Controllers.ZwierciadloGlController(epionierDbContext);
-    var hydroizohipsyController = new GreenMap.Controllers.HydroizohipsyController(epionierDbContext);
-    var monitoringController = new GreenMap.Controllers.MonitoringController(epionierDbContext, environment);
-    var zanieczyszczenieGlebController = new GreenMap.Controllers.ZanieczyszczenieGlebController(epionierDbContext);
+    var zielenController = new ZielenController(epionierDbContext);
+    var cbdhController = new CbdhObjController(epionierDbContext);
+    var hydroController = new HydroController(epionierDbContext);
+    var dzielniceController = new DzielniceController(epionierDbContext);
+    var miastoController = new GraniceMiastaController(epionierDbContext);
+    var odwiertController = new OdwiertController(epionierDbContext, environment);
+    var zwierciadloController = new ZwierciadloGlController(epionierDbContext);
+    var hydroizohipsyController = new HydroizohipsyController(epionierDbContext);
+    var monitoringController = new MonitoringController(epionierDbContext, environment);
+    var zanieczyszczenieGlebController = new ZanieczyszczenieGlebController(epionierDbContext);
+    var skladWodPodziemnychController = new SkladChemicznyWodPodziemnychController(epionierDbContext);
 
     var greenery = await zielenController.GetZielen();
     var objects = await cbdhController.GetCbdhObj();
@@ -25,6 +27,7 @@
     var filter = await odwiertController.GetFiltracja();
     var monitoring = await monitoringController.GetMonitoring();
     var soilPollution = await zanieczyszczenieGlebController.GetZanieczyszczenieGleb();
+    var groundwaterChemistry = await skladWodPodziemnychController.GetSkladChemicznyWodPodziemnych();
 
     var layersProperties = LayersProperties.Layers;
 }
@@ -48,6 +51,7 @@
         'filter': @Html.Raw(Json.Serialize(filter)),
         'monitoring': @Html.Raw(Json.Serialize(monitoring)),
         'soilPollution': @Html.Raw(Json.Serialize(soilPollution)),
+        'groundwaterChemistry': @Html.Raw(Json.Serialize(groundwaterChemistry)),
         'drilling': @Html.Raw(Json.Serialize(drilling)),
     };
 

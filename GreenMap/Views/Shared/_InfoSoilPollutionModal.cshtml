@@ -1,0 +1,81 @@
+﻿@model GreenMap.Models.ZanieczyszczenieGleb
+
+
+<div class="modal fade bd-example-modal-lg" id="infoSoilPollutionModal" tabindex="-1" role="dialog" aria-labelledby="infoSoilPollutionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoSoilPollutionModalLabel">Zanieczyszczenie gleb i gruntów</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <dl class="row">
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.Symbol)
+                        </dt>
+                        <dd class="col-sm-6" id="infoSoilPollutionSymbol">
+                            @Html.DisplayFor(model => model.Symbol)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.X)
+                        </dt>
+                        <dd class="col-sm-6" id="infoSoilPollutionCoord">
+                            @Html.DisplayFor(model => model.X) @Html.DisplayFor(model => model.Y) @Html.DisplayFor(model => model.Z)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.DataOprobowania)
+                        </dt>
+                        <dd class="col-sm-6" id="infoSoilPollutionDate">
+                            @Html.DisplayFor(model => model.DataOprobowania)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.GrupaGruntow)
+                        </dt>
+                        <dd class="col-sm-6" id="infoSoilPollutionGroup">
+                            @Html.DisplayFor(model => model.GrupaGruntow)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.ZanieczyszczenieGleby0025)
+                        </dt>
+                        <dd class="col-sm-6" id="infoSoilPollutionExist">
+                            @Html.DisplayFor(model => model.ZanieczyszczenieGleby0025)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.SubstancjeStwarzajaceRyzyko0025)
+                        </dt>
+                        <dd class="col-sm-6" id="infoSoilPollutionSubstance">
+                            @Html.DisplayFor(model => model.SubstancjeStwarzajaceRyzyko0025)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.ZanieczyszczenieGruntu025100)
+                        </dt>
+                        <dd class="col-sm-6" id="infoGroundPollution">
+                            @Html.DisplayFor(model => model.ZanieczyszczenieGruntu025100)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.SubstancjeStwarzajaceRyzyko025100)
+                        </dt>
+                        <dd class="col-sm-6" id="infoGroundPollutionSubstance">
+                            @Html.DisplayFor(model => model.SubstancjeStwarzajaceRyzyko025100)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.ZanieczyszczenieGruntu100)
+                        </dt>
+                        <dd class="col-sm-6" id="infoDeepGroundPollution">
+                            @Html.DisplayFor(model => model.ZanieczyszczenieGruntu100)
+                        </dd>
+                        <dt class="col-sm-6">
+                            @Html.DisplayNameFor(model => model.SubstancjeStwarzajaceRyzyko100)
+                        </dt>
+                        <dd class="col-sm-6" id="infoDeepGroundPollutionSubstance">
+                            @Html.DisplayFor(model => model.SubstancjeStwarzajaceRyzyko100)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

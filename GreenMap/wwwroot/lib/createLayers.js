@@ -65,9 +65,10 @@ function getFeatures(layerName) {
     switch (layerName) {
         case 'filter': return getFilterFeatures(objects);
         case 'hydroizohypse': return getHydroizohypseFeatures(objects);
-        case 'drilling': return getDrillingFeatures(objects, layerName);
         case 'monitoring': return getMonitoringFeatures(objects, layerName);
-        case 'soilPollution': return getDrillingFeatures(objects, layerName);
+        case 'soilPollution': return getFeaturesWithId(objects, layerName);
+        case 'groundwaterChemistry': return getFeaturesWithId(objects, layerName);
+        case 'drilling': return getFeaturesWithId(objects, layerName);
         default: return getSimpleFeatures(objects, layerName);
     }
 }
@@ -116,7 +117,7 @@ function getHydroizohypseFeatures(objects) {
     return featuresArray;
 }
 
-function getDrillingFeatures(objects, layerName) {
+function getFeaturesWithId(objects, layerName) {
     var featuresArray = [];
     for (var id of Object.keys(objects)) {
         var feature = wktReader.readFeature(objects[id]);

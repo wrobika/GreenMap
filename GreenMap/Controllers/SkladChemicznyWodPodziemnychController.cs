@@ -13,37 +13,36 @@ namespace GreenMap.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class ZanieczyszczenieGlebController : ControllerBase
+    public class SkladChemicznyWodPodziemnychController : ControllerBase
     {
         private readonly epionierContext _context;
 
-        public ZanieczyszczenieGlebController(epionierContext context)
+        public SkladChemicznyWodPodziemnychController(epionierContext context)
         {
             _context = context;
         }
 
-        // GET: api/ZanieczyszczenieGleb
+        // GET: api/SkladChemicznyWodPodziemnych
         [HttpGet]
-        public async Task<Dictionary<string, string>> GetZanieczyszczenieGleb()
+        public async Task<Dictionary<string, string>> GetSkladChemicznyWodPodziemnych()
         {
-            var wktWithId = await _context.ZanieczyszczenieGleb
+            var wktWithId = await _context.SkladChemicznyWodPodziemnych
                 .Where(item => item.X.HasValue)
                 .Where(item => item.Y.HasValue)
-                .ToDictionaryAsync(item => item.Symbol,
+                .ToDictionaryAsync(item => item.SymbolPunktu,
                    item => new Point(item.Y.Value, item.X.Value).ToText());
             return wktWithId;
         }
 
-        // GET: api/ZanieczyszczenieGleb/O-1
+        // GET: api/SkladChemicznyWodPodziemnych/O-1
         [HttpGet("{id}")]
-        public async Task<ActionResult<ZanieczyszczenieGleb>> GetZanieczyszczenieGleb(string id)
+        public async Task<ActionResult<SkladChemicznyWodPodziemnych>> GetSkladChemicznyWodPodziemnych(string id)
         {
-            var record = await _context.ZanieczyszczenieGleb
-                .Where(item => item.Symbol == id)
+            var record = await _context.SkladChemicznyWodPodziemnych
+                .Where(item => item.SymbolPunktu == id)
                 .FirstOrDefaultAsync();
             if (record == null)
                 return NotFound();
-            record.Geom = null;
             return record;
         }
     }
