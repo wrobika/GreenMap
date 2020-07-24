@@ -73,7 +73,9 @@ namespace GreenMap.Controllers
         public IActionResult OpenProfilePdf(int nrRbdh)
         {
             string path = _environment.WebRootPath + "/profileOtworow/" + nrRbdh + ".pdf";
-            return new PhysicalFileResult(path, "application/pdf");
+            if(System.IO.File.Exists(path))
+                return new PhysicalFileResult(path, "application/pdf");
+            return Content("Brak profilu pdf dla wybranego otworu");
         }
 
         public async Task<SelectList> GetStatusSelectList()

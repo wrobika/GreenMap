@@ -19,7 +19,10 @@
 <div id="map" class="map">
     <nav class="navbar navbar-light bg-white">
         <form class="form-inline ml-auto">
-            <button style="display:none;" id="info" type="button" class="btn btn-success m-1" data-toggle="modal" data-target="#infoModal"></button>
+            <button style="display:none;" id="infoDrilling" type="button" class="btn btn-success m-1" data-toggle="modal" data-target="#infoDrillingModal"></button>
+            <button style="display:none;" id="infoSoilPollution" type="button" class="btn btn-success m-1" data-toggle="modal" data-target="#infoSoilPollutionModal"></button>
+            <button style="display:none;" id="infoChemistry" type="button" class="btn btn-success m-1" data-toggle="modal" data-target="#infoChemistryModal"></button>
+
             <button type="button" class="btn btn-success m-1" data-toggle="modal" data-target="#searchModal">
                 Wyszukaj
             </button>
@@ -38,21 +41,19 @@
                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                     @foreach (var name in layerProperties.Keys)
                     {
-                    <button id="button_@name" value="@name" type="button" class="dropdown-item">
-                        <span><img id="eye_@name" style="width:20px;opacity:1" /></span>
-                        @layerProperties[name].FullName
-                    </button>
+                        <button id="button_@name" value="@name" type="button" class="dropdown-item">
+                            <span><img id="eye_@name" style="width:20px;opacity:1" /></span>
+                            @layerProperties[name].FullName
+                        </button>
                     }
                 </div>
             </div>
         </form>
         @{
             await Html.RenderPartialAsync("_SearchModal", new OdwiertSearch(), partialViewData);
-        }
-        @{
-            await Html.RenderPartialAsync("_InfoModal", new OdwiertInfo());
-        }
-        @{
+            await Html.RenderPartialAsync("_InfoDrillingModal", new OdwiertInfo());
+            await Html.RenderPartialAsync("_InfoSoilPollutionModal", new ZanieczyszczenieGleb());
+            await Html.RenderPartialAsync("_InfoChemistryModal", new SkladChemicznyWodPodziemnych());
             await Html.RenderPartialAsync("_SoilLegendModal");
         }
     </nav>

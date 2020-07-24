@@ -24,7 +24,8 @@ namespace GreenMap.Models
             { "rbdh", new Layer{ FullName = "baza otworów badawczych", Visible = true, Color = "DarkGoldenRod", Opacity = 1, Text="White", Cluster=true, Radius=12} },
             { "filter", new Layer{ FullName = "filtracja", Visible = false, Color = "Silver", Opacity = 1, Text="Black", Cluster=true, Radius=11, IconShapePoints=0} },
             { "monitoring", new Layer{ FullName = "monitoring", Visible = false, Color = "Violet", Opacity = 1, Text="Black", Cluster=true, Radius = 10, IconShapePoints=0} },
-            { "soilPollution", new Layer{ FullName="zanieczyszczenie gleb i gruntów", Visible = true, Color="IndianRed", Opacity=1, Text="White", Cluster=true, Radius = 12, IconShapePoints=3} },
+            { "soilPollution", new Layer{ FullName="zanieczyszczenie gleb i gruntów", Visible = false, Color="Salmon", Opacity=1, Text="White", Cluster=true, Radius = 14, IconShapePoints=3} },
+            { "groundwaterChemistry", new Layer{ FullName="skład chemiczny wód podziemnych", Visible=false, Color="Yellow", Opacity=1, Text="Black", Cluster=true, Radius = 11, IconShapePoints=4 } },
             { "drilling", new Layer{ FullName = "typ otworu", Visible = true, Color = "Red", Opacity = 1, Text="White", Cluster=true, Radius=10, IconShapePoints=0} },
         };
     }
