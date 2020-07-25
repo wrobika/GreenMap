@@ -3,7 +3,7 @@ using GreenMap.Models;
 using GreenMap.Controllers;
 using GreenMap;
 using System.Net.Http;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +22,7 @@ namespace NUnitTestProject
         public void Setup()
         {
             _searchController = new SearchController(_context);
-            _odwiertController = new OdwiertController(_context);
+            _odwiertController = new OdwiertController(_context, null);
         }
 
         [Test]
@@ -40,6 +40,15 @@ namespace NUnitTestProject
             OdwiertSearch preferences = new OdwiertSearch { Lokalizacja = "7" };
             ActionResult<Dictionary<long?, string>> result = await _searchController.SetPreferencesAndSearch(preferences);
             Assert.IsTrue(result.Value.ContainsKey(701));
+            Assert.IsFalse(result.Value.ContainsKey(707));
+        }
+
+        [Test]
+        public async Task SearchByGreeneryArea()
+        {
+            OdwiertSearch preferences = new OdwiertSearch { PowierzchniaZieleni1 = 10000, PowierzchniaZieleni2 = 15000};
+            ActionResult<Dictionary<long?, string>> result = await _searchController.SetPreferencesAndSearch(preferences);
+            Assert.IsTrue(result.Value.ContainsKey(46));
             Assert.IsFalse(result.Value.ContainsKey(707));
         }
 

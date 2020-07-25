@@ -18,16 +18,22 @@ namespace GreenMap.Models
         [Display(Name = "Lokalizacja")]
         public string Lokalizacja { get; set; }
 
+        [Display(Name = "Powierzchnia terenu zielonego")]
+        [Range(0, Double.PositiveInfinity, ErrorMessage = "Powierzchnia terenu zielonego musi być większa od 0")]
+        public double? PowierzchniaZieleni1 { get; set; }
+        [Range(0, Double.PositiveInfinity, ErrorMessage = "Powierzchnia terenu zielonego musi być większa od 0")]
+        public double? PowierzchniaZieleni2 { get; set; }
+
         [Display(Name = "Status otworu")]
         public string Status { get; set; }
 
-        [Display(Name = "Współrzędna X")]
+        [Display(Name = "Współrzędna X EUREF")]
         [Range(233811, 251375, ErrorMessage = "Współrzędna X musi mieścić się w granicach miasta (przedział 233811-251375)")]
         public double? EurefX1 { get; set; }
         [Range(233811, 251375, ErrorMessage = "Współrzędna X musi mieścić się w granicach miasta (przedział 233811-251375)")]
         public double? EurefX2 { get; set; }
 
-        [Display(Name = "Współrzędna Y")]
+        [Display(Name = "Współrzędna Y EUREF")]
         [Range(556746, 587120, ErrorMessage = "Współrzędna Y musi mieścić się w granicach miasta (przedział 556746-587120)")]
         public double? EurefY1 { get; set; }
         [Range(556746, 587120, ErrorMessage = "Współrzędna Y musi mieścić się w granicach miasta (przedział 556746-587120)")]
@@ -47,17 +53,5 @@ namespace GreenMap.Models
         public decimal? Filtracja1 { get; set; }
         [Range(0, 1, ErrorMessage = "Współczynnik filtracji musi mieścić się z zakresie od 0 do 1")]
         public decimal? Filtracja2 { get; set; }
-
-        [Display(Name = "Klasyfikacja hydrogeologiczna gleby/gruntu")]
-        public string HydroGleby { get; set; }
-
-        [Display(Name = "Zanieczyszczenie gleby/gruntu")]
-        public string ZanieczyszczenieGleby { get; set; }
-
-        [Display(Name = "Klasa jakości wody")]
-        public string JakoscWody { get; set; }
-
-        [Display(Name = "Przydatnosć do nawodnienia")]
-        public string Nawodnienie { get; set; }
     }
 }

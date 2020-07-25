@@ -40,7 +40,9 @@ namespace GreenMap.Controllers
         public IActionResult OpenPdf(string name)
         {
             string path = _env.WebRootPath + "/monitoringPdf/" + name + ".pdf";
-            return new PhysicalFileResult(path, "application/pdf");
+            if (System.IO.File.Exists(path))
+                return new PhysicalFileResult(path, "application/pdf");
+            return Content("Brak informacji z monitoringu dla wybranego punktu");
         }
     }
 }
