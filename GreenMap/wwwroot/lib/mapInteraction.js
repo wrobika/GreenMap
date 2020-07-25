@@ -56,11 +56,11 @@ function getClickInteraction(layer) {
     });
 }
 
-hydroizohypseInteraction.on('select', function (e) {
-    if (e.selected.length === 1) {
+hydroizohypseInteraction.on('select', function (event) {
+    if (event.selected.length === 1) {
         var coordinateString = document.getElementById('mouse-position').textContent;
         var coordinateArray = coordinateString.split(',');
-        popup.innerHTML = e.selected[0].get('depth');
+        popup.innerHTML = event.selected[0].get('depth');
         overlay.setPosition(coordinateArray);
     } else {
         overlay.setPosition(undefined);
@@ -68,13 +68,12 @@ hydroizohypseInteraction.on('select', function (e) {
     }
 });
 
-monitoringInteraction.on('select', function (e) {
-    var selectFeatures = monitoringInteraction.getFeatures().getArray();
-    if (selectFeatures[0].get('features').length === 1) {
-        const pdfName = selectFeatures[0].get('features')[0].get('pdfName');
-        window.open("api/Monitoring/OpenPdf/" + pdfName);
+monitoringInteraction.on('select', function (event) {
+    var singleFeature = getSingleFeature(event);
+    if (singleFeature) {
+        const pdfName = singleFeature.get('pdfName');
+        window.open("api/Monitoring/" + pdfName);
     }
-
 });
 
 drillingInteraction.on('select', function (event) {
@@ -90,16 +89,27 @@ chemistryInteraction.on('select', function (event) {
 });
 
 function getInfo(event, url, fillModalFunction) {
-    var selectedFeatures = event.selected[0].get('features')
-    if (selectedFeatures.length === 1) {
+    var singleFeature = getSingleFeature(event);
+    if (singleFeature) {
         $.ajax({
             contentType: "application/json; charset=utf-8",
             type: "GET",
-            url: url + selectedFeatures[0].getId(),
+            url: url + singleFeature.getId(),
             success: function (point) { fillModalFunction(point) },
             error: function (jqXHR) { console.log(jqXHR) }
         });
     }
+}
+
+function getSingleFeature(event) {
+    if (event.selected.length) {
+        var selectedFeatures = event.selected[0].get('features')
+        if (selectedFeatures.length === 1)
+            return selectedFeatures[0];
+        else
+            return null;
+    }
+    return null;
 }
 
 function fillDrillingModal(point) {
