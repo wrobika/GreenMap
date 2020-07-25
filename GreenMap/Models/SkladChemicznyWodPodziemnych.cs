@@ -10,7 +10,7 @@ namespace GreenMap.Models
         [Display(Name = "Symbol punktu")]
         public string SymbolPunktu { get; set; }
 
-        [Display(Name = "Współrzędne")]
+        [Display(Name = "Współrzędne EUREF")]
         public double? X { get; set; }
         public double? Y { get; set; }
         public decimal? RzednaTerenu { get; set; }

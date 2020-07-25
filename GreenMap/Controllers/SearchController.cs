@@ -10,6 +10,7 @@ using NetTopologySuite.Geometries;
 using GreenMap.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using NetTopologySuite.Operation.Union;
 
 namespace GreenMap.Controllers
 {
@@ -31,7 +32,7 @@ namespace GreenMap.Controllers
 
         [HttpPost]
         public async Task<ActionResult<Dictionary<long?, string>>> SetPreferencesAndSearch(
-            [Bind("NazwaObiektu,NrRbdh,Lokalizacja,Status,EurefX1,EurefX2,EurefY1,EurefY2,GlebokoscZwierciadla1,GlebokoscZwierciadla2,Filtracja1,Filtracja2,HydroGleby,ZanieczyszczenieGleby, JakoscWody,Nawodnienie")] 
+            [Bind("NazwaObiektu,NrRbdh,Lokalizacja,Status,EurefX1,EurefX2,EurefY1,EurefY2,GlebokoscZwierciadla1,GlebokoscZwierciadla2,KlasaFiltracji,Filtracja1,Filtracja2,PowierzchniaZieleni1,PowierzchniaZieleni2")] 
             OdwiertSearch preferences)
         {
             Preferences = preferences;
@@ -40,15 +41,17 @@ namespace GreenMap.Controllers
 
         private async Task<Dictionary<long?, string>> Search()
         {
+            SearchByName();
+            SearchByRbdh();
+            SearchByFiltering();
+            SearchByDepth();
             SearchByStatus();
             SearchByFilteringClass();
             SearchByDistrict();
             SearchByX();
             SearchByY();
-            SearchByFiltering();
-            SearchByDepth();
-            SearchByRbdh();
-            SearchByName();
+            SearchByGreeneryArea();
+
             return await OdwiertController.GetWktWithId(SearchedSet);
         }
 
@@ -71,6 +74,41 @@ namespace GreenMap.Controllers
             if (Preferences.Lokalizacja != null && !Preferences.Lokalizacja.Equals(""))
                 SearchedSet = SearchedSet
                     .Where(item => item.DzielnicaId.ToString().Equals(Preferences.Lokalizacja));
+        }
+
+        private void SearchByGreeneryArea()
+        {
+            var area1 = Preferences.PowierzchniaZieleni1;
+            var area2 = Preferences.PowierzchniaZieleni2;
+            if (area1.HasValue || area2.HasValue)
+            {
+                if (area1 > area2)
+                {
+                    double? temp = area1;
+                    area1 = area2;
+                    area2 = temp;
+                }
+                var greeneryCollection = _context.Zielen
+                    .Where(item => item.Powierzchn > area1)
+                    .Where(item => item.Powierzchn < area2)
+                    .Select(item => item.Geom)
+                    .ToListAsync();
+                Geometry specifiedGreenery = UnaryUnionOp.Union(greeneryCollection.Result);
+                var drillingsCollection = SearchedSet.ToListAsync();
+                var drillingIds = new List<short?>();
+                foreach(var drilling in drillingsCollection.Result)
+                {
+                    if (Within(drilling, specifiedGreenery))
+                        drillingIds.Add(drilling.Id);
+                }
+                SearchedSet = SearchedSet.Where(item => drillingIds.Contains(item.Id));
+            }
+        }
+
+        private bool Within(Odwiert drilling, Geometry geometry)
+        {
+            Point point = new Point(drilling.EurefY.Value, drilling.EurefX.Value);
+            return point.Within(geometry);
         }
 
         private void SearchByDepth()

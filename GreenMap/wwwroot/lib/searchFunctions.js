@@ -13,10 +13,8 @@
     searchModel.KlasaFiltracji = $('#KlasaFiltracji').val();
     searchModel.Filtracja1 = $('#Filtracja1').val();
     searchModel.Filtracja2 = $('#Filtracja2').val();
-    searchModel.HydroGleby = $('#HydroGleby').val();
-    searchModel.ZanieczyszczenieGleby = $('#ZanieczyszczenieGleby').val();
-    searchModel.JakoscWody = $('#JakoscWody').val();
-    searchModel.Nawodnienie = $('#Nawodnienie').val();
+    searchModel.PowierzchniaZieleni1 = $('#PowierzchniaZieleni1').val();
+    searchModel.PowierzchniaZieleni2 = $('#PowierzchniaZieleni2').val();
     return JSON.stringify(searchModel);
 }
 
@@ -34,10 +32,8 @@ function emptySearchForm() {
     $('#KlasaFiltracji').val("");
     $('#Filtracja1').val("");
     $('#Filtracja2').val("");
-    $('#HydroGleby').val("");
-    $('#ZanieczyszczenieGleby').val("");
-    $('#JakoscWody').val("");
-    $('#Nawodnienie').val("");
+    $('#PowierzchniaZieleni1').val("");
+    $('#PowierzchniaZieleni2').val("");
 }
 
 function search() {
@@ -47,7 +43,7 @@ function search() {
         url: 'api/Search',
         data: createSearchModel(),
         cache: false,
-        success: function (data) { loadFeatures(data) },
+        success: function (data) { console.log('gege'); loadFeatures(data); },
         error: function (jqXHR) { console.log(jqXHR) }
     });
     $('#searchModal').modal('hide');

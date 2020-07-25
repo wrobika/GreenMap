@@ -20,7 +20,7 @@ namespace GreenMap.Models
         [Display(Name = "Status otworu")]
         public string Status { get; set; }
         
-        [Display(Name = "Współrzędne geograficzne")]
+        [Display(Name = "Współrzędne geograficzne EUREF")]
         public string Wspolrzedne { get; set; }
 
         [Display(Name = "Głębokość do zwierciadła [m]")]
