@@ -6,21 +6,18 @@ namespace GreenMap.Models
 {
     public partial class epionierContext : DbContext
     {
-        public epionierContext(IConfiguration configuration, IWebHostEnvironment env)
+        public epionierContext(IConfiguration configuration)
         {
             Configuration = configuration;
-            Environment = env;
         }
 
-        public epionierContext(DbContextOptions<epionierContext> options, IConfiguration configuration, IWebHostEnvironment env)
+        public epionierContext(DbContextOptions<epionierContext> options, IConfiguration configuration)
             : base(options)
         {
             Configuration = configuration;
-            Environment = env;
         }
 
         public IConfiguration Configuration { get; }
-        public IWebHostEnvironment Environment { get; }
 
         public virtual DbSet<CbdhObj> CbdhObj { get; set; }
         public virtual DbSet<Dzielnice> Dzielnice { get; set; }
@@ -38,18 +35,15 @@ namespace GreenMap.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                if(Environment.EnvironmentName.Equals("Development"))
-                {
-                    var configuration = new ConfigurationBuilder().
-                        AddJsonFile(@"C:\Users\wnaziemiec\AppData\Roaming\Microsoft\UserSecrets\aspnet-GreenMap-F8C496C6-DBED-4523-A5C8-A991D3B79B61\secrets.json", optional: false).Build();
-                    var connectionString = configuration.GetConnectionString("EpionierContext");
-                    optionsBuilder.UseNpgsql(connectionString, x => x.UseNetTopologySuite());
-                }
-                else
-                {
-                    optionsBuilder.UseNpgsql(Configuration.GetConnectionString("EpionierContext"),
-                        x => x.UseNetTopologySuite());
-                }
+                //development
+                var configuration = new ConfigurationBuilder().
+                    AddJsonFile(@"C:\Users\wnaziemiec\AppData\Roaming\Microsoft\UserSecrets\aspnet-GreenMap-F8C496C6-DBED-4523-A5C8-A991D3B79B61\secrets.json", optional: false).Build();
+                var connectionString = configuration.GetConnectionString("EpionierContext");
+                optionsBuilder.UseNpgsql(connectionString, x => x.UseNetTopologySuite());
+
+                //production
+                //optionsBuilder.UseNpgsql(Configuration.GetConnectionString("EpionierContext"),
+                //    x => x.UseNetTopologySuite());
             }
         }
 

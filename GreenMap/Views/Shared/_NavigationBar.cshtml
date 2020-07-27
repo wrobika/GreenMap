@@ -5,7 +5,7 @@
     @inject IConfiguration configuration
 
     var layerProperties = LayersProperties.Layers;
-    var epionierDbContext = new epionierContext(configuration, environment);
+    var epionierDbContext = new epionierContext(configuration);
     var dzielniceController = new GreenMap.Controllers.DzielniceController(epionierDbContext);
     var odwiertController = new GreenMap.Controllers.OdwiertController(epionierDbContext, environment);
     SelectList districtList = await dzielniceController.GetSelectList();
