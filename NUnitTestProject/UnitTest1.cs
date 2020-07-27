@@ -14,7 +14,7 @@ namespace NUnitTestProject
 {
     public class Tests
     {
-        private readonly epionierContext _context = new epionierContext();
+        private readonly epionierContext _context = new epionierContext(null);
         private SearchController _searchController;
         private OdwiertController _odwiertController;
 
