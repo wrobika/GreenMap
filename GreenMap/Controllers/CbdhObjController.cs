@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GreenMap.Models;
@@ -31,20 +29,6 @@ namespace GreenMap.Controllers
                 .Select(item => item.Geom.ToString())
                 .ToListAsync();
             return wkt;
-        }
-
-        // GET: api/CbdhObj/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CbdhObj>> GetCbdhObj(decimal id)
-        {
-            var cbdhObj = await _context.CbdhObj.FindAsync(id);
-
-            if (cbdhObj == null)
-            {
-                return NotFound();
-            }
-
-            return cbdhObj;
         }
     }
 }

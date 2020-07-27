@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace GreenMap.Models
+﻿namespace GreenMap.Models
 {
     public partial class Odwiert
     {

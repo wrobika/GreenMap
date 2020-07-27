@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using GreenMap.Models;
 using Microsoft.AspNetCore.Authorization;
 using NetTopologySuite.Geometries;
-using Microsoft.AspNetCore.Hosting;
 
 namespace GreenMap.Controllers
 {

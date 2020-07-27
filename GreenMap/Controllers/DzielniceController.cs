@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GreenMap.Models;
@@ -32,20 +30,6 @@ namespace GreenMap.Controllers
                 .Select(item => item.Geom.ToString())
                 .ToListAsync();
             return wkt;
-        }
-
-        // GET: api/Dzielnice/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Dzielnice>> GetDzielnice(int id)
-        {
-            var dzielnice = await _context.Dzielnice.FindAsync(id);
-
-            if (dzielnice == null)
-            {
-                return NotFound();
-            }
-
-            return dzielnice;
         }
 
         public async Task<ActionResult<string>> GetName(int? id)

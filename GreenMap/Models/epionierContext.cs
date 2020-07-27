@@ -1,20 +1,26 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 
 namespace GreenMap.Models
 {
     public partial class epionierContext : DbContext
     {
-        public epionierContext()
+        public epionierContext(IConfiguration configuration, IWebHostEnvironment env)
         {
+            Configuration = configuration;
+            Environment = env;
         }
 
-        public epionierContext(DbContextOptions<epionierContext> options)
+        public epionierContext(DbContextOptions<epionierContext> options, IConfiguration configuration, IWebHostEnvironment env)
             : base(options)
         {
+            Configuration = configuration;
+            Environment = env;
         }
+
+        public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         public virtual DbSet<CbdhObj> CbdhObj { get; set; }
         public virtual DbSet<Dzielnice> Dzielnice { get; set; }
@@ -32,10 +38,18 @@ namespace GreenMap.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var configuration = new ConfigurationBuilder().
-                    AddJsonFile(@"C:\Users\wnaziemiec\AppData\Roaming\Microsoft\UserSecrets\aspnet-GreenMap-F8C496C6-DBED-4523-A5C8-A991D3B79B61\secrets.json", optional: false).Build();
-                var connectionString = configuration.GetConnectionString("EpionierContext");
-                optionsBuilder.UseNpgsql(connectionString, x => x.UseNetTopologySuite());
+                if(Environment.EnvironmentName.Equals("Development"))
+                {
+                    var configuration = new ConfigurationBuilder().
+                        AddJsonFile(@"C:\Users\wnaziemiec\AppData\Roaming\Microsoft\UserSecrets\aspnet-GreenMap-F8C496C6-DBED-4523-A5C8-A991D3B79B61\secrets.json", optional: false).Build();
+                    var connectionString = configuration.GetConnectionString("EpionierContext");
+                    optionsBuilder.UseNpgsql(connectionString, x => x.UseNetTopologySuite());
+                }
+                else
+                {
+                    optionsBuilder.UseNpgsql(Configuration.GetConnectionString("EpionierContext"),
+                        x => x.UseNetTopologySuite());
+                }
             }
         }
 
