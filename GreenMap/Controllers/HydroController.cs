@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GreenMap.Models;
@@ -31,20 +29,6 @@ namespace GreenMap.Controllers
                 .Select(item => item.Geom.ToString())
                 .ToListAsync();
             return wkt;
-        }
-
-        // GET: api/Hydro/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Hydro>> GetHydro(double id)
-        {
-            var hydro = await _context.Hydro.FindAsync(id);
-
-            if (hydro == null)
-            {
-                return NotFound();
-            }
-
-            return hydro;
         }
     }
 }

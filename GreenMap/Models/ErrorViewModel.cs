@@ -1,5 +1,3 @@
-using System;
-
 namespace GreenMap.Models
 {
     public class ErrorViewModel

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GreenMap.Models;
@@ -45,6 +43,21 @@ namespace GreenMap.Controllers
             if (zwierciadloGl == null)
                 return new EmptyResult();
             return zwierciadloGl.GlUstabilizowana;
+        }
+
+        public async Task<List<int?>> GetMirrorWithinRange(decimal maxDepth, decimal minDepth)
+        {
+            if (maxDepth > minDepth)
+            {
+                decimal temp = maxDepth;
+                maxDepth = minDepth;
+                minDepth = temp;
+            }
+            return await _context.ZwierciadloGl
+                    .Where(item => item.GlUstabilizowana > maxDepth)
+                    .Where(item => item.GlUstabilizowana < minDepth)
+                    .Select(item => item.NrRbdh)
+                    .ToListAsync();
         }
     }
 }

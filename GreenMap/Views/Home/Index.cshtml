@@ -1,10 +1,13 @@
 ﻿@{
     @using GreenMap.Controllers;
     @using Microsoft.AspNetCore.Hosting;
+    @using Microsoft.Extensions.Configuration
     @inject IWebHostEnvironment environment;
+    @inject IConfiguration configuration
+
     ViewData["Title"] = "Home Page";
     await Html.RenderPartialAsync("_NavigationBar");
-    var epionierDbContext = new epionierContext();
+    var epionierDbContext = new epionierContext(configuration, environment);
     var zielenController = new ZielenController(epionierDbContext);
     var cbdhController = new CbdhObjController(epionierDbContext);
     var hydroController = new HydroController(epionierDbContext);

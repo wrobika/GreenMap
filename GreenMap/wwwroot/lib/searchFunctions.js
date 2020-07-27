@@ -43,7 +43,7 @@ function search() {
         url: 'api/Search',
         data: createSearchModel(),
         cache: false,
-        success: function (data) { console.log('gege'); loadFeatures(data); },
+        success: function (data) { loadFeatures(data) },
         error: function (jqXHR) { console.log(jqXHR) }
     });
     $('#searchModal').modal('hide');
