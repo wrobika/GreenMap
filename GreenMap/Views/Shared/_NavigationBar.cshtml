@@ -34,7 +34,10 @@
                     Legendy
                 </button>
                 <div class="dropdown-menu" aria-labelledby="legendDropdown">
-                    <button id="soilLegend" type="button" class="dropdown-item" data-toggle="modal" data-target="#soilLegendModal">gleby</button>
+                    <button id="soilLegend" type="button" class="dropdown-item" data-toggle="modal" data-target="#soilLegendModal">typy gleb</button>
+                    <button id="filterLegend" type="button" class="dropdown-item" data-toggle="modal" data-target="#filterLegendModal">klasy wodoprzepuszczalności gruntów</button>
+                    <button id="irrigationLegend" type="button" class="dropdown-item" data-toggle="modal" data-target="#irrigationLegendModal">przydatność wód do nawadniania roślin</button>
+                    <button id="sarLegend" type="button" class="dropdown-item" data-toggle="modal" data-target="#sarLegendModal">diagram oceny przydatności wód do nawodnień</button>
                 </div>
             </div>
             <div class="dropdown">
@@ -57,7 +60,10 @@
             await Html.RenderPartialAsync("_InfoDrillingModal", new OdwiertInfo());
             await Html.RenderPartialAsync("_InfoSoilPollutionModal", new ZanieczyszczenieGleb());
             await Html.RenderPartialAsync("_InfoChemistryModal", new SkladChemicznyWodPodziemnych());
-            await Html.RenderPartialAsync("_SoilLegendModal");
+            await Html.RenderPartialAsync("_LegendSoil");
+            await Html.RenderPartialAsync("_LegendFilter");
+            await Html.RenderPartialAsync("_LegendIrrigation");
+            await Html.RenderPartialAsync("_LegendSar");
         }
     </nav>
 </div>

@@ -15,18 +15,19 @@ namespace GreenMap.Models
         public decimal? RzednaTerenu { get; set; }
 
         [Display(Name = "Data badania")]
+        [DataType(DataType.Date)]
         public DateTime? DataBadania { get; set; }
 
         [Display(Name = "pH")]
         public decimal? Ph { get; set; }
 
-        [Display(Name = "PEW")]
+        [Display(Name = "PEW [mS/cm]")]
         public decimal? Pew { get; set; }
 
         [Display(Name = "SAR")]
         public decimal? Sar { get; set; }
 
-        [Display(Name = "Klasa jakości")]
+        [Display(Name = "Klasa jakości wody")]
         public string KlasaJakosci { get; set; }
 
         [Display(Name = "Przydatność do nawadniania")]

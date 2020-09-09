@@ -58,10 +58,10 @@ namespace GreenMap.Controllers
                 NrRbdh = odwiert.NrRbdh,
                 Lokalizacja = dzielnica.Value,
                 Status = odwiert.Status,
-                Wspolrzedne = odwiert.EurefX.ToString() + " " + odwiert.EurefY.ToString(),
+                Wspolrzedne = "x: " + odwiert.EurefX.ToString() + "  y: " + odwiert.EurefY.ToString(),
                 GlebokoscZwierciadla = zwierciadlo.Value,
                 Filtracja = odwiert.WspFiltracji,
-                KlasaFiltracji = odwiert.NazwaKlasy
+                KlasaFiltracji = odwiert.NazwaKlasy + " " + odwiert.NrKlasy,
             };
             return info;
         }
