@@ -148,9 +148,6 @@ function fillChemistryModal(point) {
     document.getElementById('infoChemistrySar').innerText = point.sar;
     document.getElementById('infoChemistryQuality').innerText = point.klasaJakosci;
     document.getElementById('infoChemistryIrrigation').innerText = point.przydatnoscDoNawadniania;
-    document.getElementById('infoChemistryK').innerText = point.k;
-    document.getElementById('infoChemistryL').innerText = point.l;
-    document.getElementById('infoChemistryM').innerText = point.m;
     document.getElementById('infoChemistry').click();
 }
 

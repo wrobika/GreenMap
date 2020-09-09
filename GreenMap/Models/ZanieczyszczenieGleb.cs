@@ -20,6 +20,7 @@ namespace GreenMap.Models
         public string GrupaGruntow { get; set; }
 
         [Display(Name = "Data opróbowania")]
+        [DataType(DataType.Date)]
         public DateTime? DataOprobowania { get; set; }
 
         [Display(Name = "Zanieczyszczenie gleby (0-0,25 m ppt)")]
