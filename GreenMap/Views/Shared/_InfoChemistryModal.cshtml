@@ -22,7 +22,7 @@
                             @Html.DisplayNameFor(model => model.X)
                         </dt>
                         <dd class="col-sm-6" id="infoChemistryCoord">
-                            x: @Html.DisplayFor(model => model.X) <br />y: @Html.DisplayFor(model => model.Y) <br />z: @Html.DisplayFor(model => model.RzednaTerenu)
+                            @Html.DisplayFor(model => model.X) @Html.DisplayFor(model => model.Y) @Html.DisplayFor(model => model.RzednaTerenu)
                         </dd>
                         <dt class="col-sm-6">
                             @Html.DisplayNameFor(model => model.DataBadania)

@@ -23,7 +23,7 @@
                             @Html.DisplayNameFor(model => model.X)
                         </dt>
                         <dd class="col-sm-6" id="infoSoilPollutionCoord">
-                            x: @Html.DisplayFor(model => model.X) <br />y: @Html.DisplayFor(model => model.Y) <br />z: @Html.DisplayFor(model => model.Z)
+                            @Html.DisplayFor(model => model.X) @Html.DisplayFor(model => model.Y) @Html.DisplayFor(model => model.Z)
                         </dd>
                         <dt class="col-sm-6">
                             @Html.DisplayNameFor(model => model.DataOprobowania)
