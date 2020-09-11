@@ -117,7 +117,7 @@ function fillDrillingModal(point) {
     document.getElementById('infoRbdh').innerText = point.nrRbdh;
     document.getElementById('infoStatus').innerText = point.status;
     document.getElementById('infoDistrict').innerText = point.lokalizacja;
-    document.getElementById('infoCoord').innerText = point.wspolrzedne;
+    document.getElementById('infoCoord').innerHTML = point.wspolrzedne;
     document.getElementById('infoDepth').innerText = point.glebokoscZwierciadla;
     document.getElementById('infoFilterClass').innerText = point.klasaFiltracji;
     document.getElementById('infoFilter').innerText = point.filtracja;
@@ -126,9 +126,10 @@ function fillDrillingModal(point) {
 }
 
 function fillSoilPollutionModal(point) {
+    const dateWithoutTime = point.dataOprobowania.substring(0, point.dataOprobowania.indexOf('T'));
     document.getElementById('infoSoilPollutionSymbol').innerText = point.symbol;
-    document.getElementById('infoSoilPollutionCoord').innerText = point.x +' '+ point.y +' '+ point.z;
-    document.getElementById('infoSoilPollutionDate').innerText = point.dataOprobowania;
+    document.getElementById('infoSoilPollutionCoord').innerHTML = "X: " + point.x + "<br />Y: " + point.y + "<br />Z: " + point.z;
+    document.getElementById('infoSoilPollutionDate').innerText = dateWithoutTime;
     document.getElementById('infoSoilPollutionGroup').innerText = point.grupaGruntow;
     document.getElementById('infoSoilPollutionExist').innerText = point.zanieczyszczenieGleby0025;
     document.getElementById('infoSoilPollutionSubstance').innerText = point.substancjeStwarzajaceRyzyko0025;
@@ -140,9 +141,10 @@ function fillSoilPollutionModal(point) {
 }
 
 function fillChemistryModal(point) {
+    const dateWithoutTime = point.dataBadania.substring(0, point.dataBadania.indexOf('T'));
     document.getElementById('infoChemistrySymbol').innerText = point.symbolPunktu;
-    document.getElementById('infoChemistryCoord').innerText = point.x + ' ' + point.y + ' ' + point.rzednaTerenu;
-    document.getElementById('infoChemistryDate').innerText = point.dataBadania;
+    document.getElementById('infoChemistryCoord').innerHTML = "X: " + point.x + "<br />Y: " + point.y + "<br />Z: " + point.rzednaTerenu;
+    document.getElementById('infoChemistryDate').innerText = dateWithoutTime;
     document.getElementById('infoChemistryPh').innerText = point.ph;
     document.getElementById('infoChemistryPew').innerText = point.pew;
     document.getElementById('infoChemistrySar').innerText = point.sar;
