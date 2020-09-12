@@ -76,11 +76,10 @@
 
     function setVisible(button, layerName) {
         var img = document.getElementById('eye_' + layerName);
+        var properties = layerProperties[layerName];
         button.className = 'dropdown-item';
-        opacity = layerName != "city" ? layerProperties[layerName].opacity : "0.7";
-        button.style = 'background-color:' + layerProperties[layerName].color
-            + ';opacity:' + opacity
-            + ';color:' + layerProperties[layerName].text;
+        button.style = 'background-color:' + properties.color
+            + ';color:' + properties.text;
         img.src = '@Url.Content("~/css/eye.png")';
     }
 
