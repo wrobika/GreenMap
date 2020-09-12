@@ -63,11 +63,12 @@ function getLayerSource(layerName) {
 function getFeatures(layerName) {
     var objects = layerObjects[layerName];
     switch (layerName) {
-        case 'filter': return getFilterFeatures(objects);
+        case 'district':
+        case 'filter': return getNamedFeatures(objects, layerName);
         case 'hydroizohypse': return getHydroizohypseFeatures(objects);
         case 'monitoring': return getMonitoringFeatures(objects, layerName);
-        case 'soilPollution': return getFeaturesWithId(objects, layerName);
-        case 'groundwaterChemistry': return getFeaturesWithId(objects, layerName);
+        case 'soilPollution':
+        case 'groundwaterChemistry':
         case 'drilling': return getFeaturesWithId(objects, layerName);
         default: return getSimpleFeatures(objects, layerName);
     }
@@ -84,17 +85,17 @@ function getSimpleFeatures(objects, layerName) {
     return featuresArray;
 }
 
-function getFilterFeatures(objects) {
+function getNamedFeatures(objects, layerName) {
     var featuresArray = [];
     for (var wkt of Object.keys(objects)) {
         var feature = wktReader.readFeature(wkt);
         feature.getGeometry().transform('EPSG:2180', 'EPSG:3857');
-        var filteringAlias = objects[wkt];
-        var pointColor = getFilteringColor(filteringAlias);
-        var textColor = getFilteringTextColor(filteringAlias);
-        feature.set('color', pointColor);
-        feature.set('textColor', textColor);
-        feature.set('filtering', filteringAlias);
+        var featureName = objects[wkt];
+        var featureColor = getFeatureColor(featureName, layerName);
+        var textColor = getFeatureTextColor(featureName, layerName);
+        feature.set('color', featureColor);
+        feature.set('textColor', textColor); 
+        feature.set('name', featureName);
         featuresArray.push(feature);
     }
     return featuresArray;
@@ -180,37 +181,42 @@ function getMultiPointStyle(feature, layerName) {
 
 function getImage(feature, layerName) {
     var properties = layerProperties[layerName];
-    var size = feature.get('features').length;
     var radius = properties.radius;
     var fill = getFill(true, feature, layerName);
+    var stroke = getStroke(feature, layerName)
 
     if (properties.iconShapePoints !== 0) {
         return new ol.style.RegularShape({
             points: properties.iconShapePoints,
             radius: radius,
-            fill: fill
+            fill: fill,
+            stroke: stroke
         });
     }
     return new ol.style.Circle({
         radius: radius,
-        fill: fill
+        fill: fill,
+        stroke: stroke
     });
 }
 
 function getStroke(feature, layerName) {
-    if (layerName === 'city') {
-        return new ol.style.Stroke({
-            color: layerProperties[layerName].stroke,
-            width: 2
-        });
+    var color;
+    var width = 1;
+    switch (layerName) {
+        case 'city': color = layerProperties[layerName].stroke; width = 2; break;
+        case 'hydroizohypse': color = feature.get('color'); break;
+        case 'drilling':
+        case 'filter':
+        case 'soilPollution':
+        case 'groundwaterChemistry': color = layerProperties[layerName].text; break;
+        case 'monitoring': color = layerProperties[layerName].text; width = 2; break;
+        default: return null;
     }
-    if (layerName === 'hydroizohypse') {
-        return new ol.style.Stroke({
-            color: feature.get('color'),
-            width: 1
-        });
-    }
-    return null;
+    return new ol.style.Stroke({
+        color: color,
+        width: width
+    });
 }
 
 function getFill(cluster, feature, layerName) {
@@ -220,15 +226,20 @@ function getFill(cluster, feature, layerName) {
             color: singleFeature.get('color')
         })
     }
+    if (layerName === 'district') {
+        return new ol.style.Fill({
+            color: feature.get('color')
+        })
+    }
     return new ol.style.Fill({
         color: rgba(layerName)
     });
 }
 
 function getText(feature, layerName) {
-    if (layerName === 'filter') {
+    if (layerName === 'filter' || layerName === 'district') {
         return new ol.style.Text({
-            text: feature.get('filtering'),
+            text: feature.get('name'),
             fill: new ol.style.Fill({
                 color: feature.get('textColor')
             })

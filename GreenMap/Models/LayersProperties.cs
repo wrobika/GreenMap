@@ -17,10 +17,10 @@ namespace GreenMap.Models
             { "greenery", new Layer{ FullName = "tereny zielone", Visible = true, Color = "LimeGreen", Opacity = 0.7, Text="Black"} },
             { "soil", new Layer{ FullName = "typy gleb", Visible = false, Color = "MediumSlateBlue", Opacity = 1, Text="White", 
                 UrlWMS = urlWMS, LayersWMS = "gleby:gleby_Biezanow_Prokocim,gleby:gleby_Bieñczyce,gleby:gleby_Czyżyny,gleby:gleby_NHuta,gleby:gleby_Podgorze"} },
-            { "drilling", new Layer{ FullName = "baza otworów badawczych", Visible = true, Color = "DarkGoldenRod", Opacity = 1, Text="White", Cluster=true, Radius=10, IconShapePoints=0} },
+            { "drilling", new Layer{ FullName = "baza otworów badawczych", Visible = true, Color = "Red", Opacity = 1, Text="White", Cluster=true, Radius=10, IconShapePoints=0} },
             { "hydroizohypse", new Layer{ FullName = "zwierciadło wód podziemnych", Visible = false, Color = "DarkBlue", Opacity = 1, Text="White", Cluster=false} },
             { "filter", new Layer{ FullName = "klasa wodoprzepuszczalności gruntów", Visible = false, Color = "Silver", Opacity = 1, Text="Black", Cluster=true, Radius=11, IconShapePoints=0} },
-            { "monitoring", new Layer{ FullName = "monitoring środowiska", Visible = false, Color = "Violet", Opacity = 1, Text="Black", Cluster=true, Radius = 10, IconShapePoints=0} },
+            { "monitoring", new Layer{ FullName = "monitoring środowiska", Visible = false, Color = "DarkGoldenRod", Opacity = 1, Text="White", Cluster=true, Radius = 10, IconShapePoints=0} },
             { "soilPollution", new Layer{ FullName="zanieczyszczenie gleb i gruntów", Visible = false, Color="Maroon", Opacity=1, Text="White", Cluster=true, Radius = 14, IconShapePoints=3} },
             { "groundwaterChemistry", new Layer{ FullName="skład chemiczny wód podziemnych", Visible=false, Color="Yellow", Opacity=1, Text="Black", Cluster=true, Radius = 11, IconShapePoints=4 } },   
         };

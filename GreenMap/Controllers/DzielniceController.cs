@@ -23,13 +23,13 @@ namespace GreenMap.Controllers
 
         // GET: api/Dzielnice
         [HttpGet]
-        public async Task<List<string>> GetDzielnice()
+        public async Task<Dictionary<string, string>> GetDzielnice()
         {
-            var wkt = await _context.Dzielnice
+            var wktWithName = await _context.Dzielnice
                 .Where(item => item.Geom != null)
-                .Select(item => item.Geom.ToString())
-                .ToListAsync();
-            return wkt;
+                .ToDictionaryAsync(item => item.Geom.ToText(),
+                    item => item.NazwaPelna);
+            return wktWithName;
         }
 
         public async Task<ActionResult<string>> GetName(int? id)
